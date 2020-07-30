@@ -33,7 +33,7 @@ hisat2 -p8\
        --verbose\
        --phred33\
        --dta\
-       --rf\
+       --fr\
        -x genome_tran\
        -1 ${TRIMDIR}/${R1}\
        -2 ${TRIMDIR}/${R2}\
@@ -58,8 +58,8 @@ htseq-count \
 
 
 # Call stringtie on the target bam file
-stringtie $ID -p8\
-     --rf\
+stringtie ${ALIGNDIR}/${ID}_sorted_alignment.bam -p8\
+     --fr\
      -e -B\
      -G $GTFPATH\
      -o ${STRTIEDIR}/${ID}/${ID}.gtf\

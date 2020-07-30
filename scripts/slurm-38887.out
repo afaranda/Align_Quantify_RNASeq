@@ -1,0 +1,4 @@
+awk: cmd. line:2:     {if($0 ~ "transcript_id") print $0;\ 
+awk: cmd. line:2:                                        ^ backslash not last character on line
+awk: cmd. line:2:     {if($0 ~ "transcript_id") print $0;\ 
+awk: cmd. line:2:                                        ^ syntax error
