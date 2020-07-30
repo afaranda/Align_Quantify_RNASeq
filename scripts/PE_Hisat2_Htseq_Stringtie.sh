@@ -4,15 +4,15 @@
 #SBATCH --ntasks=8
 
 ID=$(echo $1 | sed 's/_L[0-9]\{3\}_R[12]_[0-9]\{3\}\.fastq\.gz//')
-echo SAMPLE $ID
+echo $ID
 
 ## Pretrim FastQC
-fastqc ${FASTQDIR}/${1} -o ${QCDIR}
-fastqc ${FASTQDIR}/${2} -o ${QCDIR}
+fastqc ${FASTQDIR}/${1} -o ${PRETRIM_QC}
+fastqc ${FASTQDIR}/${2} -o ${PRETRIM_QC}
 
 ## Trimgalore
-trim_galore -o $TRIMMED \
-	    --length 85 \       # Ajust based on number of reads
+trim_galore -o $TRIMDIR \
+	    --length 85 \
 	    --paired \
 	    --clip_R2 3 \
 	    --phred33 \
@@ -21,8 +21,8 @@ trim_galore -o $TRIMMED \
 	    
 
 ## Run Posttrim FastQC
-R1=$($1 | sed 's/\.fastq\.gz/_val_1.fq.gz/')
-R2=$($2 | sed 's/\.fastq\.gz/_val_2.fq.gz/')
+R1=$(echo $1 | sed 's/\.fastq\.gz/_val_1.fq.gz/')
+R2=$(echo $2 | sed 's/\.fastq\.gz/_val_2.fq.gz/')
 
 
 fastqc ${TRIMDIR}/${R1} -o ${POSTTRIM_QC}
@@ -33,7 +33,7 @@ hisat2 -p8\
        --verbose\
        --phred33\
        --dta\
-       --rf\                   # Adjust based on library method
+       --rf\
        -x genome_tran\                   
        -1 ${FASTQDIR}/${R1}\
        -2 ${FASTQDIR}/${R2}\
@@ -59,7 +59,7 @@ htseq-count \
 
 # Call stringtie on the target bam file
 stringtie $ID -p8\
-     --rf\                               # Adjust based on library method
+     --rf\
      -e -B\
      -G $GTFPATH\
      -o ${STRTIEDIR}/${ID}/${ID}.gtf\
