@@ -34,9 +34,9 @@ hisat2 -p8\
        --phred33\
        --dta\
        --rf\
-       -x genome_tran\                   
-       -1 ${FASTQDIR}/${R1}\
-       -2 ${FASTQDIR}/${R2}\
+       -x genome_tran\
+       -1 ${TRIMDIR}/${R1}\
+       -2 ${TRIMDIR}/${R2}\
        -S ${ALIGNDIR}/${ID}_aligned_reads.sam
 
 
