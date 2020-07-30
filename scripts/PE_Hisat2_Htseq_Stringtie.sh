@@ -63,5 +63,4 @@ stringtie $ID -p8\
      -e -B\
      -G $GTFPATH\
      -o ${STRTIEDIR}/${ID}/${ID}.gtf\
-     -A ${STRTIEDIR}/${ID}/${ID}.txt"
-
+     -A ${STRTIEDIR}/${ID}/${ID}.txt

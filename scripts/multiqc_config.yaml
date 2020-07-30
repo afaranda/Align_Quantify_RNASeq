@@ -1,0 +1,15 @@
+module_order:
+    - fastqc:
+        name: 'FastQC Raw'
+        anchor: 'fastqc_raw'
+        path_filters:
+             - '*R[12]_001_fastqc.zip'
+    - cutadapt
+    - fastqc:
+        name: 'FastQC Trimmed'
+        anchor: 'fastqc_trimmed'
+        path_filters:
+            - '*_val_1_fastqc.zip'
+            - '*_val_2_fastqc.zip'
+    - hisat2
+    - htseq
