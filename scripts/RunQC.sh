@@ -17,4 +17,5 @@ if [ -f ${HISAT2_INDEXES}/rseqc_gene_models.bed ]; then
     awk'{if($0 ~ "transcript_id") print $0; else print $0" transcript_id \"\";"}' ${GTFPATH}\
 	| gtf2bed - > rseqc_gene_models.bed
 fi 
+
 multiqc .
