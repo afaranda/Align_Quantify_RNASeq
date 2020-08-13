@@ -5,6 +5,12 @@ BEDPATH=/work/abf/MouseEnsembl100/rseqc_gene_models.bed
 
 # Convert selected genes from GTF File to bed to get gene models for RSeQC
 # Add genes as rows: ($0 ~ XXXX) where XXXXX is an ensembl gene ID
+#gawk '($0 ~ "ENSMUSG00000027168")\
+#    {if($0 ~ "transcript_id") print $0;\
+#    else print $0" transcript_id \"\";"}' ${GTFPATH}\
+#    | gtf2bed - > converted.bed
+
+# Convert all genes from GTF File to bed to get gene models for RSeQC
 gawk '($0 ~ "ENSMUSG00000027168")\
     {if($0 ~ "transcript_id") print $0;\
     else print $0" transcript_id \"\";"}' ${GTFPATH}\
