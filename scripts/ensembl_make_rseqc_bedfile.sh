@@ -1,4 +1,7 @@
 #!/bin/bash
+#SBATCH --job-name=make_rseqc_bedfile
+#SBATCH --mem=32000
+#SBATCH --ntasks=4
 
 GTFPATH=/work/abf/MouseEnsembl100/Mus_musculus.GRCm38.100.gtf
 BEDPATH=/work/abf/MouseEnsembl100/rseqc_gene_models.bed
@@ -11,8 +14,7 @@ BEDPATH=/work/abf/MouseEnsembl100/rseqc_gene_models.bed
 #    | gtf2bed - > converted.bed
 
 # Convert all genes from GTF File to bed to get gene models for RSeQC
-gawk '($0 ~ "ENSMUSG00000027168")\
-    {if($0 ~ "transcript_id") print $0;\
+gawk '{if($0 ~ "transcript_id") print $0;\
     else print $0" transcript_id \"\";"}' ${GTFPATH}\
     | gtf2bed - > converted.bed
 

@@ -1,4 +1,7 @@
 #!/bin/bash
+#SBATCH --job-name=make_rseqc_bed
+#SBATCH --mem=32000
+#SBATCH --ntasks=4
 
 GTFPATH=/work/abf/MouseGencodeM25/gencode.vM25.basic.annotation.gtf
 BEDPATH=/work/abf/MouseGencodeM25/rseqc_gene_models.bed
