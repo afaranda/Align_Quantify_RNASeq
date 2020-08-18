@@ -13,6 +13,7 @@
 export PATH=${PATH}:$(pwd)/scripts  # Add this pipeline to the executeable path
 export FASTQDIR=$(pwd)/DNA_Link_pax6_Fibers_Epithelium        # Path to directory with reads
 export HISAT2_INDEXES=/work/abf/MouseEnsembl100                    # Path to Genome Index Directory
+export HISAT2_PREFIX=genome_tran                              # Prefix for Hisat2 index
 export ALIGNDIR=$(pwd)/Alignments   # Path to alignment output directory
 export COUNTDIR=$(pwd)/Counts       # Path to count output directory
 export STRNGDIR=$(pwd)/Stringtie    # Path to Stringtie output directory

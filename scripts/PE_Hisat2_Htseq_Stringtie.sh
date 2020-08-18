@@ -34,7 +34,7 @@ hisat2 -p8\
        --phred33\
        --dta\
        --fr\
-       -x genome_tran\
+       -x $HISAT2_PREFIX\
        -1 ${TRIMDIR}/${R1}\
        -2 ${TRIMDIR}/${R2}\
        -S ${ALIGNDIR}/${ID}_aligned_reads.sam
@@ -62,5 +62,5 @@ stringtie ${ALIGNDIR}/${ID}_sorted_alignment.bam -p8\
      --fr\
      -e -B\
      -G $GTFPATH\
-     -o ${STRTIEDIR}/${ID}/${ID}.gtf\
-     -A ${STRTIEDIR}/${ID}/${ID}.txt
+     -o ${STRNGDIR}/${ID}/${ID}.gtf\
+     -A ${STRNGDIR}/${ID}/${ID}.txt
