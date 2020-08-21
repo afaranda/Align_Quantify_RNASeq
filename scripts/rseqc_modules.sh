@@ -3,10 +3,13 @@
 #SBATCH --mem=32000
 #SBATCH --ntasks=4
 
+# Run RSeQC Inner Distance and Gene Body Coverage for Pax6 cKO
+# and Wildtype Lens Fiber Cells
+
 export ALIGNDIR=$(pwd)/Alignments
 export RSEQCDIR=$(pwd)/RSeQC_Results
 export ALLBEDPATH=/work/abf/MouseEnsembl100/rseqc_gene_models.bed
-export ANALYSISID=EnsMm100_All
+export ANALYSISID=Ens100_Fibers_All_Genes
 
 # Create Directory for RSeQC results if it doesn't exist
 if [ ! -d $RSEQCDIR ]
@@ -17,23 +20,44 @@ fi
 
 # Generate a comma separated list of all target bam files
 bf=""
-for b in $(find $ALIGNDIR | grep bam$)
+echo Processing BAM Files:
+for b in $(find $ALIGNDIR | grep LF | grep bam$)
 do
+    echo $b
     bf="${bf},${b}"
 done
-echo $bf
+#echo $bf
+
+# Estimate Inner Distances from each alignment
+for b in $(echo $bf | sed 's/,/ /g')
+do
+    fn=$(echo $b | sed "s|$ALIGNDIR/||g"| sed 's/_sorted_alignment\.bam//g')
+    inner_distance.py\
+	-i $b\
+	-r ${ALLBEDPATH}\
+	-o ${RSEQCDIR}/${ANALYSISID}_${fn}
+done
+
+# Estimate Read Distributions
+for b in $(echo $bf | sed 's/,/ /g')
+do
+    fn=$(echo $b | sed "s|$ALIGNDIR/||g"| sed 's/_sorted_alignment\.bam//g')
+    read_distribution.py\
+	-i $b\
+	-r ${ALLBEDPATH}
+done
+
+# Estimate GC Content for Aligned Reads.
+for b in $(echo $bf | sed 's/,/ /g')
+do
+    fn=$(echo $b | sed "s|$ALIGNDIR/||g"| sed 's/_sorted_alignment\.bam//g')
+    read_GC.py\
+	-i $b\
+	-o ${RSEQCDIR}/${ANALYSISID}_${fn}
+done
 
 # Estimate Gene Body Coverage using the specified bed file
 geneBody_coverage.py\
     -i ${ALIGNDIR}\
     -r ${ALLBEDPATH}\
     -o ${RSEQCDIR}/${ANALYSISID}
-
-# Estimate Inner Distances from each alignment
-for b in $(echo $bf | sed 's/,/ /g')
-do
-    inner_distance.py\
-	-i $b\
-	-r ${ALLBEDPATH}\
-	-o ${RSEQCDIR}/${ANALYSISID}
-done
