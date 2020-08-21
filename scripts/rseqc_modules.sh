@@ -44,7 +44,7 @@ do
     fn=$(echo $b | sed "s|$ALIGNDIR/||g"| sed 's/_sorted_alignment\.bam//g')
     read_distribution.py\
 	-i $b\
-	-r ${ALLBEDPATH}
+	-r ${ALLBEDPATH} > ${RSEQCDIR}/${ANALYSISID}_${fn}
 done
 
 # Estimate GC Content for Aligned Reads.
