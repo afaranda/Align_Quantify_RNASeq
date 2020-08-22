@@ -18,4 +18,4 @@ if [ -f ${HISAT2_INDEXES}/rseqc_gene_models.bed ]; then
 	| gtf2bed - > rseqc_gene_models.bed
 fi 
 
-multiqc .
+multiqc -n $(pwd)/$(pwd)_multiqc .
