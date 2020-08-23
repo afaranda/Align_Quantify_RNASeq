@@ -56,6 +56,16 @@ do
 done
 
 
+# Generate BAM file alignment statistics
+for b in $(echo $bf | sed 's/,/ /g')
+do
+    fn=$(echo $b | sed "s|$ALIGNDIR/||g"| sed 's/_sorted_alignment\.bam//g')
+    echo $fn > ${RSEQCDIR}/${ANALYSISID}_${fn}_bam_stats.txt
+    bam_stat.py\
+	-i $b >> ${RSEQCDIR}/${ANALYSISID}_${fn}_bam_stats.txt
+done
+
+
 # Estimate Transcript Integrity
 tin.py\
     -i ${ALIGNDIR}\
@@ -73,7 +83,6 @@ do
     fn=$(echo $f | sed 's/_sorted_alignment//')
     mv $f $(pwd)/${RSEQCDIR}/${fn}
 done
-
 
 # Estimate Gene Body Coverage using the specified bed file
 geneBody_coverage.py\
