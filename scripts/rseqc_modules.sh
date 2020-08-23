@@ -65,6 +65,15 @@ do
 	-i $b >> ${RSEQCDIR}/${ANALYSISID}_${fn}_bam_stats.txt
 done
 
+# Calculate Fragment Sizes
+for b in $(echo $bf | sed 's/,/ /g')
+do
+    fn=$(echo $b | sed "s|$ALIGNDIR/||g"| sed 's/_sorted_alignment\.bam//g')
+    echo $fn > ${RSEQCDIR}/${ANALYSISID}_${fn}_bam_stats.txt
+    RNA_fragment_size.py\
+        -i $b\
+	-r ${ALLBEDPATH} >> ${RSEQCDIR}/${ANALYSISID}_${fn}_bam_stats.txt
+done
 
 # Estimate Transcript Integrity
 tin.py\
