@@ -2,42 +2,36 @@
 #SBATCH --job-name=make_rseqc_bed
 #SBATCH --mem=32000
 #SBATCH --ntasks=4
+#
+
 
 TARGETS=/work/abf/MouseEnsembl100/Crystallin_symbols.txt
 TGTLABL=gene_name
-GTFPATH=/work/abf/MouseEnsembl100/cryaa.gtf
+GTFPATH=/work/abf/MouseEnsembl100/Mus_musculus.GRCm38.100.gtf
+RESULTS=/work/abf/MouseEnsembl100/crystallins.gtf
 
 if [ ! -z $TGTLABL ] && [ ! -z $TARGETS ]
 then
-    echo cool
     gawk -v lbl=${TGTLABL}\
 	 -v FS="\t| |;"\
-	 '(NR == FNR) {tgt[$1]; next}
+	 '\
+          # Store values from first file in an array of label target pairs
+          # with the target surrounded by quotes using \042
+	  (NR == FNR)\
+          {
+              tgt[lbl" \042"$1"\042"];
+              next
+          }
+          
+          # For lines from second (gtf) file iterate over array of targets
+          # and print the line if a match exists
           (NR != FNR)\
-              {
-                 for(i=0; i<=NF; i++){                     
-                     if($i == lbl){
-                         #print($i " " $(i+1))
-                         gsub("\042","",$(i+1))
-                         if($(i+1) in tgt){
-                             $(i+1)="\042"$(i+1)"\042"
-                             for(j=1; j<=NF;j++){
-                                if(j < 9) {
-                                    printf($j"\t")
-                                }
-                                else if( j % 2 > 0){
-                                    printf($j" ")
-                                }
-                                else if( j != NF){
-                                    printf($j"; ")
-                                }
-                                else {
-                                    print($j)
-                                }
-                             }
-                         
-                         }
-                     }
-                 }
-              }' $TARGETS $GTFPATH
+          {
+	     for(i in tgt){
+                if($0 ~ i){
+	  	    print $0
+	  	}
+             }
+          }
+          ' $TARGETS $GTFPATH > ${RESULTS}
 fi
