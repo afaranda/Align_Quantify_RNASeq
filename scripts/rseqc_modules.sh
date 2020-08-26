@@ -8,8 +8,9 @@
 
 export ALIGNDIR=$(pwd)/Alignments
 export RSEQCDIR=$(pwd)/RSeQC_Results
-export ALLBEDPATH=/work/abf/MouseEnsembl100/rseqc_gene_models.bed
+export BEDPATH=/work/abf/MouseEnsembl100/rseqc_gene_models.bed
 export ANALYSISID=Ens100_Fibers_All_Genes
+export FILTER_BED=0 # Set to 1 if bam files should be filtered
 
 # Create Directory for RSeQC results if it doesn't exist
 if [ ! -d $RSEQCDIR ]
@@ -33,7 +34,7 @@ do
     fn=$(echo $b | sed "s|$ALIGNDIR/||g"| sed 's/_sorted_alignment\.bam//g')
     inner_distance.py\
 	-i $b\
-	-r ${ALLBEDPATH}\
+	-r ${BEDPATH}\
 	-o ${RSEQCDIR}/${ANALYSISID}_${fn}
 done
 
@@ -43,18 +44,32 @@ do
     fn=$(echo $b | sed "s|$ALIGNDIR/||g"| sed 's/_sorted_alignment\.bam//g')
     read_distribution.py\
 	-i $b\
-	-r ${ALLBEDPATH} > ${RSEQCDIR}/${ANALYSISID}_${fn}
+	-r ${BEDPATH} > ${RSEQCDIR}/${ANALYSISID}_${fn}
 done
 
-# Estimate GC Content for Aligned Reads.
-for b in $(echo $bf | sed 's/,/ /g')
-do
-    fn=$(echo $b | sed "s|$ALIGNDIR/||g"| sed 's/_sorted_alignment\.bam//g')
-    read_GC.py\
-	-i $b\
-	-o ${RSEQCDIR}/${ANALYSISID}_${fn}
-done
-
+# Estimate GC Content for Aligned Reads. If FILTER_BED == 1, then filter the
+# BAM file using samtools view to pass only alignments that intersect with
+# the bed file specified in BEDPATH.
+if [ $FILTER_BED == 1 ]
+then
+    for b in $(echo $bf | sed 's/,/ /g')
+    do
+	fn=$(echo $b | sed "s|$ALIGNDIR/||g"| sed 's/_sorted_alignment\.bam//g')
+	read_GC.py\
+	    -i <(samtools view -b -L ${BEDPATH} $b)\
+	    -o ${RSEQCDIR}/${ANALYSISID}_${fn}
+		 
+    done
+else
+    for b in $(echo $bf | sed 's/,/ /g')
+    do
+	fn=$(echo $b | sed "s|$ALIGNDIR/||g"| sed 's/_sorted_alignment\.bam//g')
+	read_GC.py\
+	    -i $b\
+	    -o ${RSEQCDIR}/${ANALYSISID}_${fn}
+		 
+    done    
+fi
 
 # Generate BAM file alignment statistics
 for b in $(echo $bf | sed 's/,/ /g')
@@ -72,13 +87,13 @@ do
     echo $fn > ${RSEQCDIR}/${ANALYSISID}_${fn}_bam_stats.txt
     RNA_fragment_size.py\
         -i $b\
-	-r ${ALLBEDPATH} >> ${RSEQCDIR}/${ANALYSISID}_${fn}_bam_stats.txt
+	-r ${BEDPATH} >> ${RSEQCDIR}/${ANALYSISID}_${fn}_bam_stats.txt
 done
 
 # Estimate Transcript Integrity
 tin.py\
     -i ${ALIGNDIR}\
-    -r ${ALLBEDPATH}
+    -r ${BEDPATH}
 
 # Iterate over tin.py results and move to results RSeQC Results Directory
 for f in $(find . -maxdepth 1 -regex .*sorted_alignment.summary.txt)
@@ -96,5 +111,5 @@ done
 # Estimate Gene Body Coverage using the specified bed file
 geneBody_coverage.py\
     -i ${ALIGNDIR}\
-    -r ${ALLBEDPATH}\
+    -r ${BEDPATH}\
     -o ${RSEQCDIR}/${ANALYSISID}
