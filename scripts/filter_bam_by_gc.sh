@@ -23,10 +23,15 @@ export GTFPATH=/work/abf/MouseEnsembl100/Mus_musculus.GRCm38.100.gtf
 for b in $(find $ALIGNDIR -type f -name "*sorted_alignment.bam")
 do
     fn=${b/_sorted_alignment\.bam/_byname_alignment.bam}
-    samtools sort -n -@ 4 -m 12G ${b} -o $fn
-    samtools index $fn
+    if [ ! -f $fn ]
+       samtools sort -n -@ 4 -m 12G ${b} -o $fn
+    fi
 done
 
 ## Extract Ranges from name sorted BAM files in bedpe format
 ## convert bedpe to BED spanning full fragment, calculate GC for each fragment
 ## and identify genes that overlap each fragment
+for b in$(find $ALIGNDIR -type f -name "*byname_alignment.bam")
+do
+bedtools bamtobed
+done
