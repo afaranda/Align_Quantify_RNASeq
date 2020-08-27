@@ -33,10 +33,13 @@ done
 ## and identify genes that overlap each fragment
 for b in$(find $ALIGNDIR -type f -name "*byname_alignment.bam")
 do
-    bedtools bamtobed -bedpe $b\
+    bedtools bamtobed -bedpe -i $b\
 	| gawk -v FS="\t"\
+	       -v OFS="\t"\
         '\
-        # reduce paired end to total span. 
-        '
-    
+        ( $1 !~ /\./)\
+        {
+             print $1, $2, $6, $7, $8, $9
+        }
+        '\    
 done
