@@ -15,16 +15,17 @@
 
 
 ## Setup Environment
-export ALIGNDIR=$(pwd)/Alignments
+export ALIGNDIR=../30J*/Alignments
 export BEDPATH=/work/abf/MouseEnsembl100/rseqc_gene_models.bed
 export GTFPATH=/work/abf/MouseEnsembl100/Mus_musculus.GRCm38.100.gtf
 
 ## Iterate Over Alignments; generate and index name sorted BAM files
-for b in $(find ${ALIGNDIR} -type f -name "*sorted_alignment.bam")
+for b in $(find $ALIGNDIR -type f -name "*sorted_alignment.bam")
 do
-samtools sort 
+    fn=${b/_sorted_alignment\.bam/_byname_alignment.bam}
+    samtools sort -n -@ 4 -m 12G ${b} -o $fn
+    samtools index $fn
 done
-
 
 ## Extract Ranges from name sorted BAM files in bedpe format
 ## convert bedpe to BED spanning full fragment, calculate GC for each fragment
