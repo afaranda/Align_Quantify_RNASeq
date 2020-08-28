@@ -18,6 +18,7 @@
 export ALIGNDIR=../30J*/Alignments
 export BEDPATH=/work/abf/MouseEnsembl100/rseqc_gene_models.bed
 export GTFPATH=/work/abf/MouseEnsembl100/Mus_musculus.GRCm38.100.gtf
+export MINQUAL=30
 
 ## Iterate Over Alignments; generate and index name sorted BAM files
 for b in $(find $ALIGNDIR -type f -name "*sorted_alignment.bam")
@@ -36,8 +37,9 @@ do
     bedtools bamtobed -bedpe -i $b\
 	| gawk -v FS="\t"\
 	       -v OFS="\t"\
+	       -v MQ=$MINQUAL\
         '\
-        ( $1 !~ /\./)\
+        ( $1 !~ /\./ && $9 >= MQ)\
         {
              print $1, $2, $6, $7, $8, $9
         }
