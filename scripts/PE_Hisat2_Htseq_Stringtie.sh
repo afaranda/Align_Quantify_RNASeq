@@ -36,13 +36,15 @@ else
 fi
 
 ## Run Posttrim FastQC
-R1=$(echo $1 | sed 's/\.fastq\.gz/_val_1.fq.gz/')
-R2=$(echo $2 | sed 's/\.fastq\.gz/_val_2.fq.gz/')
-
-
-fastqc ${TRIMDIR}/${R1} -o ${POSTTRIM_QC}
-fastqc ${TRIMDIR}/${R2} -o ${POSTTRIM_QC}
-
+F1=$(echo $R1 | sed 's/\.fq\.gz/_fastqc.html/')
+if [ -f ${POSTTRIM_QC}/${F1} ]
+then
+    echo skipping posttrim QC $R1
+    echo skipping posttrim QC $R2
+else
+    fastqc ${TRIMDIR}/${R1} -o ${POSTTRIM_QC}
+    fastqc ${TRIMDIR}/${R2} -o ${POSTTRIM_QC}
+fi
 ## Align Trimmed Reads Using Hisat2
 hisat2 -p8\
        --verbose\
