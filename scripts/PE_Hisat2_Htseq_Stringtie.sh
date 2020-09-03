@@ -45,39 +45,53 @@ else
     fastqc ${TRIMDIR}/${R1} -o ${POSTTRIM_QC}
     fastqc ${TRIMDIR}/${R2} -o ${POSTTRIM_QC}
 fi
+
 ## Align Trimmed Reads Using Hisat2
-hisat2 -p8\
-       --verbose\
-       --phred33\
-       --dta\
-       --fr\
-       -x $HISAT2_PREFIX\
-       -1 ${TRIMDIR}/${R1}\
-       -2 ${TRIMDIR}/${R2}\
-       -S ${ALIGNDIR}/${ID}_aligned_reads.sam
+if [ -f ${ALIGNDIR}/${ID}_sorted_alignment.bam ]
+then
+   echo skipping alignment for sample $ID
+else
+    hisat2 -p8\
+	   --verbose\
+	   --phred33\
+	   --dta\
+	   --fr\
+	   -x $HISAT2_PREFIX\
+	   -1 ${TRIMDIR}/${R1}\
+	   -2 ${TRIMDIR}/${R2}\
+	   -S ${ALIGNDIR}/${ID}_aligned_reads.sam
 
-
-## compress, sort, and index alignments
-samtools view -bS ${ALIGNDIR}/${ID}_aligned_reads.sam > ${ALIGNDIR}/${ID}_aligned_reads.bam
-
-samtools sort -o ${ALIGNDIR}/${ID}_sorted_alignment.bam ${ALIGNDIR}/${ID}_aligned_reads.bam
-
-samtools index ${ALIGNDIR}/${ID}_sorted_alignment.bam
-
-rm ${ALIGNDIR}/${ID}_aligned_reads.bam ${ALIGNDIR}/${ID}_aligned_reads.sam
+    ## compress, sort, and index alignments
+    samtools view -bS ${ALIGNDIR}/${ID}_aligned_reads.sam > ${ALIGNDIR}/${ID}_aligned_reads.bam
+    
+    samtools sort -o ${ALIGNDIR}/${ID}_sorted_alignment.bam ${ALIGNDIR}/${ID}_aligned_reads.bam
+    
+    samtools index ${ALIGNDIR}/${ID}_sorted_alignment.bam
+    
+    rm ${ALIGNDIR}/${ID}_aligned_reads.bam ${ALIGNDIR}/${ID}_aligned_reads.sam
+fi
 
 ## Get Gene-level counts with Htseq Count
 # Call htseq-count on the target bam file
-htseq-count \
-     -i gene_id -r pos -f bam -s reverse -m union --type exon \
-     ${ALIGNDIR}/${ID}_sorted_alignment.bam \
-     $GTFPATH > ${COUNTDIR}/${ID}_GeneCount.txt
-
+if [ -f ${COUNTDIR}/${ID}_GeneCount.txt ]
+then
+    echo skipping htseq-count for $ID
+else
+    htseq-count \
+	-i gene_id -r pos -f bam -s reverse -m union --type exon \
+	${ALIGNDIR}/${ID}_sorted_alignment.bam \
+	$GTFPATH > ${COUNTDIR}/${ID}_GeneCount.txt
+fi
 
 # Call stringtie on the target bam file
-stringtie ${ALIGNDIR}/${ID}_sorted_alignment.bam -p8\
-     --fr\
-     -e -B\
-     -G $GTFPATH\
-     -o ${STRNGDIR}/${ID}/${ID}.gtf\
-     -A ${STRNGDIR}/${ID}/${ID}.txt
+if [ -f ${STRTIEDIR}/${ID}/${ID}.txt ]
+then
+    echo skipping stringtie for $ID
+else
+    stringtie ${ALIGNDIR}/${ID}_sorted_alignment.bam -p8\
+	      --fr\
+	      -e -B\
+	      -G $GTFPATH\
+	      -o ${STRNGDIR}/${ID}/${ID}.gtf\
+	      -A ${STRNGDIR}/${ID}/${ID}.txt
+fi
