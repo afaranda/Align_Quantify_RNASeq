@@ -4,21 +4,36 @@
 #SBATCH --ntasks=8
 
 ID=$(echo $1 | sed 's/_L[0-9]\{3\}_R[12]_[0-9]\{3\}\.fastq\.gz//')
+F1=$(echo $1 | sed 's/\.fastq\.gz/_fastqc.html/')
 echo $ID
 
 ## Pretrim FastQC
-fastqc ${FASTQDIR}/${1} -o ${PRETRIM_QC}
-fastqc ${FASTQDIR}/${2} -o ${PRETRIM_QC}
+if [ -f ${PRETRIM_QC}/${F1} ]
+then
+    echo skipping pretrim FastQC for $1
+    echo skipping pretrim FastQC for $2
+else
+    fastqc ${FASTQDIR}/${1} -o ${PRETRIM_QC}
+    fastqc ${FASTQDIR}/${2} -o ${PRETRIM_QC}
+fi
+
+## Get Trimmed Filenames
+R1=$(echo $1 | sed 's/\.fastq\.gz/_val_1.fq.gz/')
+R2=$(echo $2 | sed 's/\.fastq\.gz/_val_2.fq.gz/')
 
 ## Trimgalore
-trim_galore -o $TRIMDIR \
-	    --length 85 \
-	    --paired \
-	    --clip_R2 3 \
-	    --phred33 \
-	    ${FASTQDIR}/${1} \
-	    ${FASTQDIR}/${2}
-	    
+if [ -f ${TRIMDIR}/${R1} ]
+then
+    echo skipping trim for $ID
+else
+    trim_galore -o $TRIMDIR \
+		--length 85 \
+		--paired \
+		--clip_R2 3 \
+		--phred33 \
+		${FASTQDIR}/${1} \
+		${FASTQDIR}/${2}
+fi
 
 ## Run Posttrim FastQC
 R1=$(echo $1 | sed 's/\.fastq\.gz/_val_1.fq.gz/')
