@@ -35,29 +35,12 @@ done
 ## Extract Ranges from name sorted BAM files in bedpe format
 ## convert bedpe to BED spanning full fragment, calculate GC for each fragment
 ## and identify genes that overlap each fragment
-# for b in $(find $ALIGNDIR -type f -name "*byname_alignment.bam")
-# do
-#     echo $b
-#     bedtools bamtobed -bedpe -i <(samtools view -h -f3 $b)\
-# 	| head -n 10\
-# 	| gawk -v FS="\t"\
-# 	       -v OFS="\t"\
-# 	       -v MQ=$MINQUAL\
-#         '\
-#         ( $1 !~ /\./)\
-#         {
-#              print $1, $2, $6, $7, $8, $9
-#         }
-#         '\
-# 	#| bedtools nuc -s -fi $fasta -bed stdin
-# done
-
 
 for b in $(find $ALIGNDIR -type f -name "*byname_alignment.bam")
 do
-#    echo $b
+    echo $b
+    ofn=$(echo $b | sed 's/byname_alignment\.bam/high_gc_reads_by_gene.txt')
     bedtools bamtobed -bedpe -i <(samtools view -q $MINQUAL -h -f3 -F 256 $b)\
-	| head -n 10\
 	| gawk -v FS="\t"\
 	       -v OFS="\t"\
                '\
@@ -67,6 +50,13 @@ do
         }
         '\
 	| bedtools nuc -s -fi $fasta -bed stdin\
-	| gawk -v OFS="\t" -v MG=$MINGC '($8 < MG) {print $1, $2, $3}'
-	| bedtools intersect 
+	| gawk -v OFS="\t" -v MG=$MINGC '($8 < MG) {print $1, $2, $3}'\
+	| bedtools intersect -s -c -b stdin -a <(\
+	       gawk -v OFS="\t"\
+		    -v FS="\t|; "\
+		    '{gsub("gene_id ","",$9); gsub("\042","",$9)}
+                     {gsub("gene_name ","",$11); gsub("\042","",$11)}
+                     ($3 ==  "gene")\
+                     {print $1, $2, $3, $4, $5, $6, $7, $8,$9"\t", $11}'\
+		     ${GTFPATH}) > ${ALIGNDIR}/${ofn}
 done
