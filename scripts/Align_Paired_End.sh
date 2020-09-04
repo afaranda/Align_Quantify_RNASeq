@@ -49,18 +49,16 @@ for D in ${ARR[@]}; do
 done
     
 # Iterate over FastQ Files, launch aprocessing script for each pair of reads
-echo $(ls $FASTQDIR)
+echo $(ls -lh $FASTQDIR)
 JOBS=""
 for R1 in $(ls $FASTQDIR | grep $FQTARGET)
 do
     R2=$(echo $R1 | sed 's/R1/R2/')
     echo "Running" sbatch PE_Hisat2_Htseq_Stringtie.sh $R1 $R2
     JB=$(sbatch PE_Hisat2_Htseq_Stringtie.sh $R1 $R2 | gawk '{print $4}')
-    #JB=$(sbatch dummy.sh | gawk '{print $4}')
     JOBS=${JOBS},afterok:${JB}
 done
 
-
 # Aggregate QC Results in One Place
 export JOBS=$(echo $JOBS | sed 's/,//')
-sbatch --dependency=${JOBS} RunQC.sh
+sbatch --dependency=${JOBS},${ROBS} RunQC.sh
