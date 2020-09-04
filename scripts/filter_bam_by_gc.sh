@@ -39,7 +39,7 @@ done
 for b in $(find $ALIGNDIR -type f -name "*byname_alignment.bam")
 do
     echo $b
-    ofn=$(echo $b | sed 's/byname_alignment\.bam/high_gc_reads_by_gene.txt')
+    ofn=$(echo $b | sed 's/byname_alignment\.bam/high_gc_reads_by_gene.txt/')
     bedtools bamtobed -bedpe -i <(samtools view -q $MINQUAL -h -f3 -F 256 $b)\
 	| gawk -v FS="\t"\
 	       -v OFS="\t"\
@@ -58,5 +58,5 @@ do
                      {gsub("gene_name ","",$11); gsub("\042","",$11)}
                      ($3 ==  "gene")\
                      {print $1, $2, $3, $4, $5, $6, $7, $8,$9"\t", $11}'\
-		     ${GTFPATH}) > ${ALIGNDIR}/${ofn}
+		     ${GTFPATH}) > ${ofn}
 done
