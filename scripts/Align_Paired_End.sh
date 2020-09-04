@@ -53,15 +53,11 @@ echo $(ls $FASTQDIR)
 JOBS=""
 for R1 in $(ls $FASTQDIR | grep $FQTARGET)
 do
-    CK=$(echo $R1 | sed 's/\.fastq\.gz//')
-    echo "Running" ${CK}
-    if [ ! -f ${POSTTRIM_QC}/${CK} ] ; then
-	R2=$(echo $R1 | sed 's/R1/R2/')
-	echo "Running" sbatch PE_Hisat2_Htseq_Stringtie.sh $R1 $R2
-	JB=$(sbatch PE_Hisat2_Htseq_Stringtie.sh $R1 $R2 | gawk '{print $4}')
-	#JB=$(sbatch dummy.sh | gawk '{print $4}')
-	JOBS=${JOBS},afterok:${JB}
-    fi
+    R2=$(echo $R1 | sed 's/R1/R2/')
+    echo "Running" sbatch PE_Hisat2_Htseq_Stringtie.sh $R1 $R2
+    JB=$(sbatch PE_Hisat2_Htseq_Stringtie.sh $R1 $R2 | gawk '{print $4}')
+    #JB=$(sbatch dummy.sh | gawk '{print $4}')
+    JOBS=${JOBS},afterok:${JB}
 done
 
 
