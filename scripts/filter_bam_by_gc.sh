@@ -27,6 +27,7 @@ for b in $(find $ALIGNDIR -type f -name "*sorted_alignment.bam")
 do
     fn=${b/_sorted_alignment\.bam/_byname_alignment.bam}
     if [ ! -f $fn ]
+    then
        samtools sort -n -@ 4 -m 12G ${b} -o $fn
     fi
 done
@@ -34,17 +35,38 @@ done
 ## Extract Ranges from name sorted BAM files in bedpe format
 ## convert bedpe to BED spanning full fragment, calculate GC for each fragment
 ## and identify genes that overlap each fragment
-for b in$(find $ALIGNDIR -type f -name "*byname_alignment.bam")
+# for b in $(find $ALIGNDIR -type f -name "*byname_alignment.bam")
+# do
+#     echo $b
+#     bedtools bamtobed -bedpe -i <(samtools view -h -f3 $b)\
+# 	| head -n 10\
+# 	| gawk -v FS="\t"\
+# 	       -v OFS="\t"\
+# 	       -v MQ=$MINQUAL\
+#         '\
+#         ( $1 !~ /\./)\
+#         {
+#              print $1, $2, $6, $7, $8, $9
+#         }
+#         '\
+# 	#| bedtools nuc -s -fi $fasta -bed stdin
+# done
+
+
+for b in $(find $ALIGNDIR -type f -name "*byname_alignment.bam")
 do
-    bedtools bamtobed -bedpe -i $b\
+#    echo $b
+    bedtools bamtobed -bedpe -i <(samtools view -q $MINQUAL -h -f3 -F 256 $b)\
+	| head -n 10\
 	| gawk -v FS="\t"\
 	       -v OFS="\t"\
-	       -v MQ=$MINQUAL\
-        '\
-        ( $1 !~ /\./ && $9 >= MQ)\
-        {
-             print $1, $2, $6, $7, $8, $9
+               '\
+        ( $1 !~ /\./ && $6 > $2)\
+        { 
+	     print $1, $2, $6, $7, $8, $9
         }
         '\
-	| bedtools nuc -fi $fasta -i stdin
+	| bedtools nuc -s -fi $fasta -bed stdin\
+	| gawk -v OFS="\t" -v MG=$MINGC '($8 < MG) {print $1, $2, $3}'
+	| bedtools intersect 
 done
