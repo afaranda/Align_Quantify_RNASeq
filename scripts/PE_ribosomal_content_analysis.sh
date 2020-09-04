@@ -38,9 +38,9 @@ fi
 # The values in this segment must be determined from the Rn45s nucleotide sequence
 # the ribobed variable stores a single "BED" line that defines the entire
 # Rn45s nucleotide sequence as one big exon. 
-ribobed=NR_046233.2$"\t"0"\t"13400"\t"NR_046233.2
-ribobed=$ribobed"\t"0"\t"."\t"0"\t"13400"\t"0
-ribobed=$ribobed"\t"1"\t"13400,"\t"0,
+# ribobed=NR_046233.2$"\t"0"\t"13400"\t"NR_046233.2
+# ribobed=$ribobed"\t"0"\t"."\t"0"\t"13400"\t"0
+# ribobed=$ribobed"\t"1"\t"13400,"\t"0,
 
 echo bed line used for inner distance calculations:
 echo -e $ribobed
@@ -58,15 +58,15 @@ read_GC.py\
     -i ${ALIGNDIR}/${ID}_sorted_ribo.bam\
     -o ${RSEQCDIR}/Ribo_${ID}
 
+## Calculate Summary Alignment statistics
+
+
 ## Estimate Fraction of Ribosomal Alignments in Genomic Alignments
 genomic=${ID}_sorted_alignment.bam
 ribosomal=${ID}_sorted_ribo.bam
 
 gawk -v FS="\t"\
      'BEGIN {rc=0; fc=0}
-     (fc == 0){aln[$1]}
-     (fc == 1){unl[$1]}
-     (fc == 2){rib[$1]}
      (rc > FNR)\
      {
         fc ++
@@ -80,6 +80,10 @@ gawk -v FS="\t"\
         }
      }
     {rc = FNR - 1}
+    (fc == 0){aln[$1]}	
+    (fc == 1){unl[$1]}	
+    (fc == 2){rib[$1]}	
+    
     END\
     {
         alnCount = 0
@@ -105,11 +109,7 @@ gawk -v FS="\t"\
         }
         print ribCount "\t" alnCount "\t" unlCount "\t" nulCount "\t"
     }'\
-     <(samtools view -f67 -F259 ${ALIGNDIR}/${genomic})\
+     <(samtools view -f67 ${ALIGNDIR}/${genomic})\
      <(samtools view -f4 ${ALIGNDIR}/${genomic})\
-     <(samtools view -f67 -F259 ${ALIGNDIR}/${ribosomal})\
-     >{ID}_ribosomal_reads_in_genomic.txt)
-       
-
-				  
-
+     <(samtools view -f67 -F256 ${ALIGNDIR}/${ribosomal})\
+     >${RSEQCDIR}/${ID}_ribosomal_reads_in_genomic.txt
