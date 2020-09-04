@@ -71,7 +71,7 @@ for f in $(ls ${SPLITDIR}); do
         | sort -k4,4n \
 	| bedtools merge -i stdin -c 6,8 -o distinct \
 	| gawk -v OFS="\t" '{print $1, $2, $3, $5, ".", $4, $3 - $2}'# \
-	| bedtools nuc -fi ${fasta} -bed stdin \
+	| bedtools nuc -s -fi ${fasta} -bed stdin \
 	| gawk '(NR > 1) {print $0}' \
 	| bedtools groupby -g 4 -c 10,11,12,13,14,15,16 -o sum \
 	| gawk -v OFS="\t" '{print $1, $8, ($3 + $4) / $8}'  # >> ${RESFILE}

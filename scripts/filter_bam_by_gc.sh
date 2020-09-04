@@ -18,7 +18,9 @@
 export ALIGNDIR=../30J*/Alignments
 export BEDPATH=/work/abf/MouseEnsembl100/rseqc_gene_models.bed
 export GTFPATH=/work/abf/MouseEnsembl100/Mus_musculus.GRCm38.100.gtf
+export fasta=/work/abf/MouseEnsembl100/Mus_musculus.GRCm38.dna.primary_assembly.fa
 export MINQUAL=30
+export MINGC=0.7
 
 ## Iterate Over Alignments; generate and index name sorted BAM files
 for b in $(find $ALIGNDIR -type f -name "*sorted_alignment.bam")
@@ -43,5 +45,6 @@ do
         {
              print $1, $2, $6, $7, $8, $9
         }
-        '\    
+        '\
+	| bedtools nuc -fi $fasta -i stdin
 done
