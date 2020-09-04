@@ -58,3 +58,58 @@ read_GC.py\
     -i ${ALIGNDIR}/${ID}_sorted_ribo.bam\
     -o ${RSEQCDIR}/Ribo_${ID}
 
+## Estimate Fraction of Ribosomal Alignments in Genomic Alignments
+genomic=${ID}_sorted_alignment.bam
+ribosomal=${ID}_sorted_ribo.bam
+
+gawk -v FS="\t"\
+     'BEGIN {rc=0; fc=0}
+     (fc == 0){aln[$1]}
+     (fc == 1){unl[$1]}
+     (fc == 2){rib[$1]}
+     (rc > FNR)\
+     {
+        fc ++
+        if(fc == 1)
+        {
+           unl[$1]
+        }
+        else
+        {
+           rib[$1]
+        }
+     }
+    {rc = FNR - 1}
+    END\
+    {
+        alnCount = 0
+        unlCount = 0
+        ribCount = 0
+        nulCount = 0
+
+        for(read in rib)
+        {
+            ribCount ++
+            if(read in aln)
+            {
+               alnCount ++
+            }
+            else if(read in unl)
+            {
+               unlCount ++
+            }
+            else
+            {
+               nulCount ++
+            }
+        }
+        print ribCount "\t" alnCount "\t" unlCount "\t" nulCount "\t"
+    }'\
+     <(samtools view -f67 -F259 ${ALIGNDIR}/${genomic})\
+     <(samtools view -f4 ${ALIGNDIR}/${genomic})\
+     <(samtools view -f67 -F259 ${ALIGNDIR}/${ribosomal})\
+     >{ID}_ribosomal_reads_in_genomic.txt)
+       
+
+				  
+
