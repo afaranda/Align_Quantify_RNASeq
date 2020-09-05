@@ -50,13 +50,13 @@ do
         }
         '\
 	| bedtools nuc -s -fi $fasta -bed stdin\
-	| gawk -v OFS="\t" -v MG=$MINGC '($8 < MG) {print $1, $2, $3}'\
-	| bedtools intersect -s -c -b stdin -a <(\
-	       gawk -v OFS="\t"\
-		    -v FS="\t|; "\
-		    '{gsub("gene_id ","",$9); gsub("\042","",$9)}
-                     {gsub("gene_name ","",$11); gsub("\042","",$11)}
-                     ($3 ==  "gene")\
-                     {print $1, $2, $3, $4, $5, $6, $7, $8,$9"\t", $11}'\
-		     ${GTFPATH}) > ${ofn}
+	| gawk -v OFS="\t" -v MG=$MINGC '($8 < MG) {print $1, $2, $3}' > ${ofn}    
+	# | bedtools intersect -s -c -b stdin -a <(\
+	#        gawk -v OFS="\t"\
+	# 	    -v FS="\t|; "\
+	# 	    '{gsub("gene_id ","",$9); gsub("\042","",$9)}
+        #              {gsub("gene_name ","",$11); gsub("\042","",$11)}
+        #              ($3 ==  "gene")\
+        #              {print $1, $2, $3, $4, $5, $6, $7, $8,$9"\t", $11}'\
+	# 	     ${GTFPATH}) > ${ofn}
 done
