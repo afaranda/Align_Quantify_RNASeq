@@ -38,9 +38,9 @@ fi
 # The values in this segment must be determined from the Rn45s nucleotide sequence
 # the ribobed variable stores a single "BED" line that defines the entire
 # Rn45s nucleotide sequence as one big exon. 
-# ribobed=NR_046233.2$"\t"0"\t"13400"\t"NR_046233.2
-# ribobed=$ribobed"\t"0"\t"."\t"0"\t"13400"\t"0
-# ribobed=$ribobed"\t"1"\t"13400,"\t"0,
+ribobed=NR_046233.2$"\t"0"\t"13400"\t"NR_046233.2
+ribobed=$ribobed"\t"0"\t"."\t"0"\t"13400"\t"0
+ribobed=$ribobed"\t"1"\t"13400,"\t"0,
 
 echo bed line used for inner distance calculations:
 echo -e $ribobed
