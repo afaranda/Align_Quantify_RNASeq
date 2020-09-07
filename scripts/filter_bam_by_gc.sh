@@ -10,6 +10,10 @@
 #          and identify the genes / features that they overlap. 
 # Created: August 26, 2020
 # Author: Adam Faranda
+# TO DO:
+#      -  Determine whether to use the strand "+/-" value from the first or
+#         or the second read in a pair
+#      -  Create and run a mock vaildation set
 #
 ###############################################################################
 
@@ -42,7 +46,6 @@ do
     obed=$(echo $b | sed 's/byname_alignment\.bam/high_gc_frags.bed/')
     ofn=$(echo $b | sed 's/byname_alignment\.bam/high_gc_frags_by_gene.txt/')
     bedtools bamtobed -bedpe -i <(samtools view -q $MINQUAL -h -f3 -F 256 $b)\
-	| head -n 100 \
 	| gawk -v FS="\t"\
 	       -v OFS="\t"\
                '\
