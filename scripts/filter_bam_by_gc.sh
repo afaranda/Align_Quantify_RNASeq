@@ -39,8 +39,10 @@ done
 for b in $(find $ALIGNDIR -type f -name "*byname_alignment.bam")
 do
     echo $b
-    ofn=$(echo $b | sed 's/byname_alignment\.bam/high_gc_reads_by_gene.txt/')
+    obed=$(echo $b | sed 's/byname_alignment\.bam/high_gc_frags.bed/')
+    ofn=$(echo $b | sed 's/byname_alignment\.bam/high_gc_frags_by_gene.txt/')
     bedtools bamtobed -bedpe -i <(samtools view -q $MINQUAL -h -f3 -F 256 $b)\
+	| head -n 100 \
 	| gawk -v FS="\t"\
 	       -v OFS="\t"\
                '\
@@ -50,13 +52,14 @@ do
         }
         '\
 	| bedtools nuc -s -fi $fasta -bed stdin\
-	| gawk -v OFS="\t" -v MG=$MINGC '($8 < MG) {print $1, $2, $3}' > ${ofn}    
-	# | bedtools intersect -s -c -b stdin -a <(\
-	#        gawk -v OFS="\t"\
-	# 	    -v FS="\t|; "\
-	# 	    '{gsub("gene_id ","",$9); gsub("\042","",$9)}
-        #              {gsub("gene_name ","",$11); gsub("\042","",$11)}
-        #              ($3 ==  "gene")\
-        #              {print $1, $2, $3, $4, $5, $6, $7, $8,$9"\t", $11}'\
-	# 	     ${GTFPATH}) > ${ofn}
+	| gawk -v OFS="\t" -v MG=$MINGC '($8 < MG) {print $1, $2, $3, $4, $8, $6}'\
+	| tee -a ${obed}\
+	| bedtools intersect -s -c -b stdin -a <(\
+	       gawk -v OFS="\t"\
+	       	    -v FS="\t|; "\
+	       	    '{gsub("gene_id ","",$9); gsub("\042","",$9)}
+                     {gsub("gene_name ","",$11); gsub("\042","",$11)}
+                     ($3 ==  "gene")\
+                     {print $1, $2, $3, $4, $5, $6, $7, $8,$9"\t", $11}'\
+	       	     ${GTFPATH}) > ${ofn}
 done
