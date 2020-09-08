@@ -12,9 +12,11 @@ automate the processing of RNA Sequencing data.
   * Update PE_ribsosomal_content_analysis.sh with appropriate length
   * Run appropriate \*_make_rseqc_bedfile.sh script (update filepaths)
   * Generate additional RSeQC bedfiles for targeted analysis eg. crystallins.
+  * Estimate Gene Level length and GC content using Extract_Length_GC.sh
 3. Set Up Analysis Script
-  * Edit 
+  * Edit header for appropriate file paths / index labels
 4. Run Main Analysis
+  * Push main analysis script and cross fingers
 5. Run extended analyses
 
 ### Scripts
