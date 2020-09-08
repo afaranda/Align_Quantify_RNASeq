@@ -25,6 +25,8 @@ export BEDPATH=/work/abf/MouseEnsembl100/rseqc_gene_models.bed # Path to bed fil
 export TRIMDIR=$(pwd)/Trimmed   # Path to Trimmed Reads Directory
 export FQTARGET="L[0-9]\{3\}_R1_[0-9]\{3\}\.fastq\.gz"  # Regex for fastq files
 export MULTIQC_CONFIG_PATH=scripts/multiqc_config.yaml
+export DELDIR=0 # Set to 1 to delete previous results
+
 # De-Gitify and Create directories if none exist
 if [ -d .git ]; then
     rm -rf .git
@@ -45,7 +47,7 @@ for D in ${ARR[@]}; do
     if [ ! -d $D ]; then
 	mkdir $D
 	
-    else
+    elif [ $DELDIR == 1 ]; then
 	rm -rf $D
 	mkdir $D
     fi
