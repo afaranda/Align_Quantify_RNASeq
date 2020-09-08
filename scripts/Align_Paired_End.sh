@@ -11,7 +11,7 @@
 
 # Define Main Directories
 export PATH=${PATH}:$(pwd)/scripts  # Add this pipeline to the executeable path
-export FASTQDIR=$(pwd)/DNA_Link_pax6_Fibers_Epithelium        # Path to directory with reads
+export FASTQDIR=$(pwd)/fastq        # Path to directory with reads
 export HISAT2_INDEXES=/work/abf/MouseEnsembl100                    # Path to Genome Index Directory
 export HISAT2_PREFIX=genome_tran                              # Prefix for Hisat2 index
 export ALIGNDIR=$(pwd)/Alignments   # Path to alignment output directory
@@ -25,7 +25,7 @@ export BEDPATH=/work/abf/MouseEnsembl100/rseqc_gene_models.bed # Path to bed fil
 export TRIMDIR=$(pwd)/Trimmed   # Path to Trimmed Reads Directory
 export FQTARGET="L[0-9]\{3\}_R1_[0-9]\{3\}\.fastq\.gz"  # Regex for fastq files
 export MULTIQC_CONFIG_PATH=scripts/multiqc_config.yaml
-export DELDIR=0 # Set to 1 to delete previous results
+export DELOLD=0 # Set to 1 to delete previous results
 
 # De-Gitify and Create directories if none exist
 if [ -d .git ]; then
@@ -47,7 +47,7 @@ for D in ${ARR[@]}; do
     if [ ! -d $D ]; then
 	mkdir $D
 	
-    elif [ $DELDIR == 1 ]; then
+    elif [ $DELOLD == 1 ]; then
 	rm -rf $D
 	mkdir $D
     fi
