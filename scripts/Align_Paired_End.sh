@@ -20,6 +20,8 @@ export STRNGDIR=$(pwd)/Stringtie    # Path to Stringtie output directory
 export PRETRIM_QC=$(pwd)/PRE_FastQC      # Path to Pre Trim QC Output Directory
 export POSTTRIM_QC=$(pwd)/POST_FastQC # Path to Post Trimming FastQC(unify later)
 export GTFPATH=/work/abf/MouseEnsembl100/Mus_musculus.GRCm38.100.gtf    # Path to GTF File
+export RSEQCDIR=$(pwd)/RSeQC_Results        # Path to RSeQC results
+export BEDPATH=/work/abf/MouseEnsembl100/rseqc_gene_models.bed # Path to bed file for RSeQC
 export TRIMDIR=$(pwd)/Trimmed   # Path to Trimmed Reads Directory
 export FQTARGET="L[0-9]\{3\}_R1_[0-9]\{3\}\.fastq\.gz"  # Regex for fastq files
 export MULTIQC_CONFIG_PATH=scripts/multiqc_config.yaml
@@ -37,7 +39,8 @@ ARR=($ALIGNDIR \
 	 $STRNGDIR \
 	 $PRETRIM_QC \
 	 $POSTTRIM_QC \
-	 $TRIMDIR)
+	 $TRIMDIR \
+	 $RSEQCDIR)
 for D in ${ARR[@]}; do
     if [ ! -d $D ]; then
 	mkdir $D
