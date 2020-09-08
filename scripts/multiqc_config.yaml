@@ -13,3 +13,11 @@ module_order:
             - '*_val_2_fastqc.zip'
     - hisat2
     - htseq
+    - rseqc
+extra_fn_clean_exts:
+    - '_AlignStat'
+    - '_GeneCount'
+    - type: regex
+      pattern: '_val_[12]'
+    - type: regex
+      pattern: '_L[0-9]{3}_R[12]_[0-9]{3}'

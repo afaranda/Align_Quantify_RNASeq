@@ -12,6 +12,13 @@ for j in ${jobs[@]}; do
     mv slurm-${j}.out ${ALIGNDIR}/${ID}_AlignStat.txt
 done
 
+ROBS=$(echo $ROBS | sed 's/afterok://g')
+IFS="," read -ra robs <<< "$ROBS"
+for j in ${robs[@]}; do
+    ID=$(head -n 1 slurm-${j}.out)
+    mv slurm-${j}.out ${ALIGNDIR}/${ID}_RiboAlignStat.txt
+done
+
 # Generate Bed File
 if [ -f ${HISAT2_INDEXES}/rseqc_gene_models.bed ]; then
     awk'{if($0 ~ "transcript_id") print $0; else print $0" transcript_id \"\";"}' ${GTFPATH}\
