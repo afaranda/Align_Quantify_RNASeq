@@ -10,7 +10,7 @@
 # export ALIGNDIR=$(pwd)/Alignments
 # export RSEQCDIR=$(pwd)/RSeQC_Results
 # export BEDPATH=/work/abf/MouseEnsembl100/rseqc_gene_models.bed
-export ANALYSISID=Ens100_Fibers_All_Genes
+export ANALYSISID=Main_All_Genes
 export FILTER_BED=0 # Set to 1 if bam files should be filtered
 
 # Create Directory for RSeQC results if it doesn't exist
@@ -85,10 +85,10 @@ done
 for b in $(echo $bf | sed 's/,/ /g')
 do
     fn=$(echo $b | sed "s|$ALIGNDIR/||g"| sed 's/_sorted_alignment\.bam//g')
-    echo $fn > ${RSEQCDIR}/${ANALYSISID}_${fn}_bam_stats.txt
+    echo $fn > ${RSEQCDIR}/${ANALYSISID}_${fn}_frag_sizes.txt
     RNA_fragment_size.py\
         -i $b\
-	-r ${BEDPATH} >> ${RSEQCDIR}/${ANALYSISID}_${fn}_bam_stats.txt
+	-r ${BEDPATH} >> ${RSEQCDIR}/${ANALYSISID}_${fn}_frag_sizes.txt
 done
 
 # Estimate Transcript Integrity
