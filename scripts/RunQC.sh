@@ -24,3 +24,7 @@ $(pwd)/scripts/rseqc_modules.sh
 
 # Aggregate QC Results for Main Analysis
 multiqc -n $(pwd)/${PWD##*/}_multiqc .
+
+# Aggregate QC Results for Ribosomal Analysis
+multiqc -n $(pwd)/${PWD##*/}_ribo_multiqc\
+	--config $(pwd)/scripts/multiqc_ribo.yaml  .

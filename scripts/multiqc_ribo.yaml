@@ -1,0 +1,24 @@
+run_modules:
+    -hisat2
+    -rseqc
+module_order:
+    - hisat2:
+        path_filters:
+	    - '*_RiboAlignStat.txt'
+    - rseqc:
+        path_filters:
+            - '*/RSeQC_Results/Ribo*'
+fn_ignore_files:
+    - '*_AlignStat.txt'
+    - '*_GeneCount.txt'
+fn_ignore_dirs:
+    - 'PRE_FastQC'
+    - 'POST_FastQC'
+extra_fn_clean_exts:
+    - '_RiboAlignStat.txt'
+    - type: regex
+      pattern: '_L[0-9]{3}_R[12]_[0-9]{3}'
+    - type: regex
+      pattern: 'Ribo_'
+    - type: regex
+      pattern: '_bam_stats'

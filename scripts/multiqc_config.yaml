@@ -25,3 +25,7 @@ extra_fn_clean_exts:
       pattern: '_val_[12]'
     - type: regex
       pattern: '_L[0-9]{3}_R[12]_[0-9]{3}'
+    - type: regex
+      pattern: 'Main_All_Genes_'
+    - type: regex
+      pattern: '_bam_stats'
