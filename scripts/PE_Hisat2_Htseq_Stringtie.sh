@@ -84,7 +84,7 @@ else
 fi
 
 # Call stringtie on the target bam file
-if [ -f ${STRTIEDIR}/${ID}/${ID}.txt ]
+if [ -f ${STRNGDIR}/${ID}/${ID}.txt ]
 then
     echo skipping stringtie for $ID
 else
