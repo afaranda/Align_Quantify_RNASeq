@@ -19,4 +19,8 @@ for j in ${robs[@]}; do
     mv slurm-${j}.out ${ALIGNDIR}/${ID}_RiboAlignStat.txt
 done
 
-multiqc -n $(pwd)/$(pwd)_multiqc .
+# Run Rseqc modules
+$(pwd)/scripts/rseqc_modules.sh
+
+# Aggregate QC Results for Main Analysis
+multiqc -n $(pwd)/${PWD##*/}_multiqc .

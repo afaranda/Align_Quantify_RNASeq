@@ -8,6 +8,7 @@
 ID=$(echo $1 | sed 's/_L[0-9]\{3\}_R[12]_[0-9]\{3\}\.fastq\.gz//')
 R1=$(echo $1 | sed 's/\.fastq\.gz/_val_1.fq.gz/')
 R2=$(echo $2 | sed 's/\.fastq\.gz/_val_2.fq.gz/')
+echo $ID
 
 ## Align Trimmed Reads To Ribosomal Index Using Hisat2
 if [ -f ${ALIGNDIR}/${ID}_sorted_ribo.bam ]
