@@ -15,7 +15,7 @@ module_order:
     - htseq
     - rseqc:
         path_filters:
-	    -  '*/RSeQC_Results/Main_All_Genes*'
+            - '*/RSeQC_Results/Main_All_Genes*'
 fn_ignore_files:
     - '*Ribo*'
 extra_fn_clean_exts:
