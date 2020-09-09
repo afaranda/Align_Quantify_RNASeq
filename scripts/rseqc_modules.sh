@@ -24,7 +24,7 @@ fi
 # Generate a comma separated list of all target bam files
 bf=""
 echo Processing BAM Files:
-for b in $(find $ALIGNDIR | grep LF | grep bam$)
+for b in $(find $ALIGNDIR -regex .*_sorted_alignment.bam$)
 do
     echo $b
     bf="${bf},${b}"
@@ -101,13 +101,13 @@ tin.py\
 # Iterate over tin.py results and move to results RSeQC Results Directory
 for f in $(find . -maxdepth 1 -regex .*sorted_alignment.summary.txt)
 do
-    fn=$(echo $f | sed 's/sorted_alignment/tin/')
+    fn=$(echo $f | sed 's/sorted_alignment/tin/'| sed 's/^\.\///')
     mv $f $(pwd)/${RSEQCDIR}/${fn}
 done
 
 for f in $(find . -maxdepth 1 -regex .*sorted_alignment.tin.xls)
 do
-    fn=$(echo $f | sed 's/_sorted_alignment//')
+    fn=$(echo $f | sed 's/_sorted_alignment//'| sed 's/^\.\///')
     mv $f $(pwd)/${RSEQCDIR}/${fn}
 done
 
