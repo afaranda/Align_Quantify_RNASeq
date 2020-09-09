@@ -47,7 +47,7 @@ do
     fn=$(echo $b | sed "s|$ALIGNDIR/||g"| sed 's/_sorted_alignment\.bam//g')
     read_distribution.py\
 	-i $b\
-	-r ${BEDPATH} > ${RSEQCDIR}/${ANALYSISID}_${fn}
+	-r ${BEDPATH} > ${RSEQCDIR}/${ANALYSISID}_${fn}_read_dists.txt
 done
 
 # Estimate GC Content for Aligned Reads. If FILTER_BED == 1, then filter the
@@ -87,7 +87,6 @@ done
 for b in $(echo $bf | sed 's/,/ /g')
 do
     fn=$(echo $b | sed "s|$ALIGNDIR/||g"| sed 's/_sorted_alignment\.bam//g')
-    echo $fn > ${RSEQCDIR}/${ANALYSISID}_${fn}_frag_sizes.txt
     RNA_fragment_size.py\
         -i $b\
 	-r ${BEDPATH} >> ${RSEQCDIR}/${ANALYSISID}_${fn}_frag_sizes.txt
@@ -95,24 +94,24 @@ done
 
 # Estimate Transcript Integrity
 tin.py\
-    -i ${ALIGNDIR}\
+    -i ${bf}\
     -r ${BEDPATH}
 
 # Iterate over tin.py results and move to results RSeQC Results Directory
 for f in $(find . -maxdepth 1 -regex .*sorted_alignment.summary.txt)
 do
     fn=$(echo $f | sed 's/sorted_alignment/tin/'| sed 's/^\.\///')
-    mv $f $(pwd)/${RSEQCDIR}/${fn}
+    mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
 done
 
 for f in $(find . -maxdepth 1 -regex .*sorted_alignment.tin.xls)
 do
     fn=$(echo $f | sed 's/_sorted_alignment//'| sed 's/^\.\///')
-    mv $f $(pwd)/${RSEQCDIR}/${fn}
+    mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
 done
 
 # Estimate Gene Body Coverage using the specified bed file
 geneBody_coverage.py\
-    -i ${ALIGNDIR}\
+    -i ${bf}\
     -r ${BEDPATH}\
     -o ${RSEQCDIR}/${ANALYSISID}
