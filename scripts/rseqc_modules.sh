@@ -3,8 +3,10 @@
 #SBATCH --mem=32000
 #SBATCH --ntasks=4
 
-# Run RSeQC Inner Distance and Gene Body Coverage for Pax6 cKO
-# and Wildtype Lens Fiber Cells
+#
+# TO_DO: Either parallelize the Gene_Body_Coverage Analysis or
+#        Figure out a way to run it over a smaller subset of
+#        genes -- the whole genome takes way too long
 
 # Uncomment and edit the following variables if running standalone
 # export ALIGNDIR=$(pwd)/Alignments
