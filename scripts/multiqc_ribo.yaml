@@ -1,10 +1,7 @@
-run_modules:
-    -hisat2
-    -rseqc
 module_order:
     - hisat2:
         path_filters:
-	    - '*_RiboAlignStat.txt'
+            - '*_RiboAlignStat.txt'
     - rseqc:
         path_filters:
             - '*/RSeQC_Results/Ribo*'
