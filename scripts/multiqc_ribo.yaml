@@ -11,6 +11,7 @@ fn_ignore_files:
 fn_ignore_dirs:
     - 'PRE_FastQC'
     - 'POST_FastQC'
+    - 'Trimmed'
 extra_fn_clean_exts:
     - '_RiboAlignStat.txt'
     - type: regex
