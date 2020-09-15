@@ -3,7 +3,7 @@ module_order:
         name: 'FastQC Raw'
         anchor: 'fastqc_raw'
         path_filters:
-             - '*R[12]_001_fastqc.zip'
+            - '*R[12]_001_fastqc.zip'
     - cutadapt
     - fastqc:
         name: 'FastQC Trimmed'
