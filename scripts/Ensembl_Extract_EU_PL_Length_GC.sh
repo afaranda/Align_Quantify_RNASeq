@@ -1,7 +1,7 @@
 #!/bin/bash
 ###############################################################################
 #
-# File:    Gencode_Extract_EU_PL_Length_GC.sh
+# File:    Ensembl_Extract_EU_PL_Length_GC.sh
 #
 # Purpose: Calculate gene level estimates of length and GC content using
 #          using features defined in a Gencode formatted GTF File
@@ -30,15 +30,15 @@
 #         
 #
 # Author:  Adam Faranda
-# Created: October 5, 2020
+# Created: October 12, 2020
 #
 ###############################################################################
 
 export SPLITDIR="$(pwd)/Separate_Genes"
-export igtf="gencode.vM25.basic.annotation.gtf"
-export fasta="GRCm38.primary_assembly.genome.chr.fa"
+export igtf="Mus_musculus.GRCm38.101.gtf"
+export fasta="Mus_musculus.GRCm38.dna.primary_assembly.fa"
 export SPLITERR=${SPLITDIR}/bad_genes.txt
-export RESFILE=Gencode_M25_Basic_Length_GC.tsv
+export RESFILE=Ens_Mm101_Length_GC.tsv
 
 if [ ! -d ${SPLITDIR} ]
 then
@@ -132,14 +132,14 @@ for f in $(ls ${SPLITDIR}); do
                  gsub(/\042/,"")                         # drop quotes
                  split($9,atr,";| ")               # Store field 9 in array atr      
                  gid[atr[2]]                       # Store gene id as array key
-                 tlen[atr[4]]=tlen[atr[4]] + $18   # sum exon lengths by txid
+                 tlen[atr[6]]=tlen[atr[6]] + $18   # sum exon lengths by txid
                  if($0 ~ /appris_principal/){    # Flag "P" if principal
-                    tprn[atr[4]]="P"                 
+                    tprn[atr[6]]="P"                 
                  }
                  else{
-                     tprn[atr[4]]="N"              # Flag "N" if not principal
+                     tprn[atr[6]]="N"              # Flag "N" if not principal
                  }
-                 txgc[atr[4]]=txgc[atr[4]] + $13 + $14
+                 txgc[atr[6]]=txgc[atr[6]] + $13 + $14
              }
              # After loading 
              (FNR != NR && $1 in gid){
