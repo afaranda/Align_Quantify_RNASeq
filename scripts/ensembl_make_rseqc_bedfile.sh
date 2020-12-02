@@ -3,8 +3,8 @@
 #SBATCH --mem=32000
 #SBATCH --ntasks=4
 
-GTFPATH=/work/abf/MouseEnsembl100/Mus_musculus.GRCm38.100.gtf
-BEDPATH=/work/abf/MouseEnsembl100/rseqc_gene_models.bed
+GTFPATH=/work/abf/MouseEnsembl101/Mus_musculus.GRCm38.101.gtf
+BEDPATH=/work/abf/MouseEnsembl101/rseqc_gene_models.bed
 
 # Convert selected genes from GTF File to bed to get gene models for RSeQC
 # Add genes as rows: ($0 ~ XXXX) where XXXXX is an ensembl gene ID

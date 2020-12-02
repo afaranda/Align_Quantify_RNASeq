@@ -15,10 +15,10 @@
 #  RESULTS= << Output stored in the file at this path >>
 #
 
-TARGETS=/work/abf/MouseEnsembl100/Crystallin_symbols.txt
+TARGETS=/work/abf/MouseEnsembl101/Crystallin_symbols.txt
 TGTLABL=gene_name
-GTFPATH=/work/abf/MouseEnsembl100/Mus_musculus.GRCm38.100.gtf
-RESULTS=/work/abf/MouseEnsembl100/crystallins.gtf
+GTFPATH=/work/abf/MouseEnsembl101/Mus_musculus.GRCm38.101.gtf
+RESULTS=/work/abf/MouseEnsembl101/crystallins.gtf
 
 if [ ! -z $TGTLABL ] && [ ! -z $TARGETS ]
 then
