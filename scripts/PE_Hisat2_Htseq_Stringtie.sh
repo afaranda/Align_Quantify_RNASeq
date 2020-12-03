@@ -31,6 +31,7 @@ else
 		--paired \
 		--clip_R2 3 \
 		--phred33 \
+		--cores 8 \
 		${FASTQDIR}/${1} \
 		${FASTQDIR}/${2}
 fi
@@ -90,6 +91,7 @@ then
     echo skipping stringtie for $ID
 else
     stringtie ${ALIGNDIR}/${ID}_sorted_alignment.bam -p8\
+	      -p 8\
 	      --fr\
 	      -e -B\
 	      -G $GTFPATH\

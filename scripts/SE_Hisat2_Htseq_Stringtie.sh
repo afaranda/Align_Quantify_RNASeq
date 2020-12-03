@@ -27,6 +27,7 @@ else
     trim_galore -o $TRIMDIR \
 		--length 35 \
 		--phred33 \
+		--cores 8\
 		${FASTQDIR}/${1}
 fi
 
@@ -83,6 +84,7 @@ then
 else
     stringtie ${ALIGNDIR}/${ID}_sorted_alignment.bam -p8\
 	      --fr\
+	      -p 8\
 	      -e -B\
 	      -G $GTFPATH\
 	      -o ${STRNGDIR}/${ID}/${ID}.gtf\
