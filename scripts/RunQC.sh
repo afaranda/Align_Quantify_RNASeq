@@ -29,3 +29,12 @@ multiqc -n $(pwd)/${PWD##*/}_multiqc\
 # Aggregate QC Results for Ribosomal Analysis
 multiqc -n $(pwd)/${PWD##*/}_ribo_multiqc\
 	--config $(pwd)/scripts/multiqc_ribo.yaml .
+
+
+# Aggregate Ribosomal Content estimates
+OUTFILE=${RSEQCDIR}/ribosomal_alignment_fractions.txt
+echo -e "sample\ttotal\tonly_genomic\tgenomic_and_ribo\tonly_ribo\tno_alignment\tribo_check\tgenomic_check" >> $OUTFILE
+for f in $(find ${RSEQCDIR} -regex ".*ribosomal_reads_in_genomic.*")
+do
+    cat $f >> $OUTFILE
+done
