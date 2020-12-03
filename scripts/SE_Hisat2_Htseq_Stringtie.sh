@@ -15,8 +15,8 @@ else
     fastqc ${FASTQDIR}/${1} -o ${PRETRIM_QC}
 fi
 
-## Get Trimmed Filenames
-R1=$(echo $1 | sed 's/\.fastq\.gz/_val_1.fq.gz/')
+## Get Trimmed Filename
+R1=$(echo $1 | sed 's/\.fastq\.gz/_trimmed.fq.gz/')
 
 ## Trimgalore Adjust parameters depending on
 ## kit used (add clipping and change length for smarter stranded)
@@ -51,6 +51,7 @@ else
 	   --fr\
 	   -x $HISAT2_PREFIX\
 	   -U ${TRIMDIR}/${R1}\
+	   --rna-strandness RF\
 	   -S ${ALIGNDIR}/${ID}_aligned_reads.sam
 
     ## compress, sort, and index alignments

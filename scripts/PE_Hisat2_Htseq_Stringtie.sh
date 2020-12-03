@@ -34,7 +34,7 @@ else
 		${FASTQDIR}/${1} \
 		${FASTQDIR}/${2}
 fi
-
+n
 ## Run Posttrim FastQC
 F1=$(echo $R1 | sed 's/\.fq\.gz/_fastqc.html/')
 if [ -f ${POSTTRIM_QC}/${F1} ]
@@ -59,6 +59,7 @@ else
 	   -x $HISAT2_PREFIX\
 	   -1 ${TRIMDIR}/${R1}\
 	   -2 ${TRIMDIR}/${R2}\
+	   --rna-strandness RF\
 	   -S ${ALIGNDIR}/${ID}_aligned_reads.sam
 
     ## compress, sort, and index alignments
