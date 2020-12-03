@@ -62,9 +62,9 @@ else
 	   -S ${ALIGNDIR}/${ID}_aligned_reads.sam
 
     ## compress, sort, and index alignments
-    samtools view -bS ${ALIGNDIR}/${ID}_aligned_reads.sam > ${ALIGNDIR}/${ID}_aligned_reads.bam
+    samtools view -@ 8 -bS ${ALIGNDIR}/${ID}_aligned_reads.sam > ${ALIGNDIR}/${ID}_aligned_reads.bam
     
-    samtools sort -o ${ALIGNDIR}/${ID}_sorted_alignment.bam ${ALIGNDIR}/${ID}_aligned_reads.bam
+    samtools sort -@ 8 -m 12G -o ${ALIGNDIR}/${ID}_sorted_alignment.bam ${ALIGNDIR}/${ID}_aligned_reads.bam
     
     samtools index ${ALIGNDIR}/${ID}_sorted_alignment.bam
     
