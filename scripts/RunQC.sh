@@ -20,7 +20,7 @@ for j in ${robs[@]}; do
 done
 
 # Run Rseqc modules
-$(pwd)/scripts/rseqc_modules.sh
+$(pwd)/scripts/${RSEQCMOD}
 
 # Aggregate QC Results for Main Analysis
 multiqc -n $(pwd)/${PWD##*/}_multiqc\
