@@ -92,24 +92,6 @@ do
 	-r ${BEDPATH} >> ${RSEQCDIR}/${ANALYSISID}_${fn}_frag_sizes.txt
 done
 
-# Estimate Transcript Integrity
-tin.py\
-    -i ${bf}\
-    -r ${BEDPATH}
-
-# Iterate over tin.py results and move to results RSeQC Results Directory
-for f in $(find . -maxdepth 1 -regex .*sorted_alignment.summary.txt)
-do
-    fn=$(echo $f | sed 's/sorted_alignment/tin/'| sed 's/^\.\///')
-    mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
-done
-
-for f in $(find . -maxdepth 1 -regex .*sorted_alignment.tin.xls)
-do
-    fn=$(echo $f | sed 's/_sorted_alignment//'| sed 's/^\.\///')
-    mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
-done
-
 # Estimate Gene Body Coverage using the specified bed file
 geneBody_coverage.py\
     -i ${bf}\

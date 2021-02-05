@@ -2,6 +2,8 @@
 #SBATCH --job-name=RunQC
 #SBATCH --ntasks=4
 #SBATCH --mem=32000
+#RSEQCDIR=$(pwd)/RSeQC_Results
+ANALYSISID=Main_All_Genes
 
 #Move slurm output to Alignment Directory
 JOBS=$(echo $JOBS | sed 's/afterok://g')
@@ -30,6 +32,18 @@ multiqc -n $(pwd)/${PWD##*/}_multiqc\
 multiqc -n $(pwd)/${PWD##*/}_ribo_multiqc\
 	--config $(pwd)/scripts/multiqc_ribo.yaml .
 
+# Iterate over tin.py results and move to results RSeQC Results Directory
+for f in $(find . -maxdepth 1 -regex .*sorted_alignment.summary.txt)
+do
+    fn=$(echo $f | sed 's/sorted_alignment/tin/'| sed 's/^\.\///')
+    mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
+done
+
+for f in $(find . -maxdepth 1 -regex .*sorted_alignment.tin.xls)
+do
+    fn=$(echo $f | sed 's/_sorted_alignment//'| sed 's/^\.\///')
+    mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
+done
 
 # Aggregate Ribosomal Content estimates
 OUTFILE=${RSEQCDIR}/ribosomal_alignment_fractions.txt

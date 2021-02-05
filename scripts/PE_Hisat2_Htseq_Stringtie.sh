@@ -98,3 +98,6 @@ else
 	      -o ${STRNGDIR}/${ID}/${ID}.gtf\
 	      -A ${STRNGDIR}/${ID}/${ID}.txt
 fi
+
+# Estimate Transcript Integrity using iteratively generated script
+tin.py -i ${ALIGNDIR}/${ID}_sorted_alignment.bam -r $BEDPATH
