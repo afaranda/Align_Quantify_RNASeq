@@ -20,6 +20,7 @@ else
 	   --phred33\
 	   --dta\
 	   --fr\
+   	   --rna-strandness RF\
 	   -x Rn45s_Index\
 	   -1 ${TRIMDIR}/${R1}\
 	   -2 ${TRIMDIR}/${R2}\

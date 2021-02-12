@@ -95,5 +95,10 @@ done
 # Estimate Gene Body Coverage using the specified bed file
 geneBody_coverage.py\
     -i ${bf}\
-    -r ${BEDPATH}\
-    -o ${RSEQCDIR}/${ANALYSISID}
+    -r /work/abf/MouseEnsembl101/rseqc_perinatal_lethal_models.bed\
+    -o ${RSEQCDIR}/${ANALYSISID}_lethal
+
+geneBody_coverage.py\
+    -i ${bf}\
+    -r /work/abf/MouseEnsembl101/rseqc_crystallin_transcript_models.bed\
+    -o ${RSEQCDIR}/${ANALYSISID}_crystallin
