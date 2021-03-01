@@ -10,31 +10,31 @@ R1=$(echo $1 | sed 's/\.fastq\.gz/_val_1.fq.gz/')
 R2=$(echo $2 | sed 's/\.fastq\.gz/_val_2.fq.gz/')
 echo $ID
 
-## Align Trimmed Reads To Ribosomal Index Using Hisat2
-if [ -f ${ALIGNDIR}/${ID}_sorted_ribo.bam ]
-then
-   echo skipping alignment for sample $ID
-else   
-    hisat2 -p8\
-	   --verbose\
-	   --phred33\
-	   --dta\
-	   --fr\
-   	   --rna-strandness RF\
-	   -x Rn45s_Index\
-	   -1 ${TRIMDIR}/${R1}\
-	   -2 ${TRIMDIR}/${R2}\
-	   -S ${ALIGNDIR}/${ID}_ribo_reads.sam
+# ## Align Trimmed Reads To Ribosomal Index Using Hisat2
+# if [ -f ${ALIGNDIR}/${ID}_sorted_ribo.bam ]
+# then
+#    echo skipping alignment for sample $ID
+# else   
+#     hisat2 -p8\
+# 	   --verbose\
+# 	   --phred33\
+# 	   --dta\
+# 	   --fr\
+#    	   --rna-strandness RF\
+# 	   -x Rn45s_Index\
+# 	   -1 ${TRIMDIR}/${R1}\
+# 	   -2 ${TRIMDIR}/${R2}\
+# 	   -S ${ALIGNDIR}/${ID}_ribo_reads.sam
 
-    ## compress, sort, and index alignments
-    samtools view -@ 8 -bS ${ALIGNDIR}/${ID}_ribo_reads.sam > ${ALIGNDIR}/${ID}_ribo_reads.bam
+#     ## compress, sort, and index alignments
+#     samtools view -@ 8 -bS ${ALIGNDIR}/${ID}_ribo_reads.sam > ${ALIGNDIR}/${ID}_ribo_reads.bam
     
-    samtools sort -@ 8 -m 12G -o ${ALIGNDIR}/${ID}_sorted_ribo.bam ${ALIGNDIR}/${ID}_ribo_reads.bam
+#     samtools sort -@ 8 -m 12G -o ${ALIGNDIR}/${ID}_sorted_ribo.bam ${ALIGNDIR}/${ID}_ribo_reads.bam
     
-    samtools index ${ALIGNDIR}/${ID}_sorted_ribo.bam
+#     samtools index ${ALIGNDIR}/${ID}_sorted_ribo.bam
     
-    rm ${ALIGNDIR}/${ID}_ribo_reads.bam ${ALIGNDIR}/${ID}_ribo_reads.sam
-fi
+#     rm ${ALIGNDIR}/${ID}_ribo_reads.bam ${ALIGNDIR}/${ID}_ribo_reads.sam
+# fi
 
 ### Compose "Single Exon BED file for Inner Distance Calculations
 # The values in this segment must be determined from the Rn45s nucleotide sequence
