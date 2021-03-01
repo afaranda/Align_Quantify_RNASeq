@@ -47,6 +47,7 @@ else
 	   --phred33\
 	   --dta\
 	   --fr\
+	   --summary-file ${ALIGNDIR}/${ID}_RiboAlignStat.txt\
 	   -x Rn45s_Index\
 	   -1 ${TRIMDIR}/${R1}\
 	   -2 ${TRIMDIR}/${R2}\
@@ -99,6 +100,7 @@ else
 	   --phred33\
 	   --dta\
 	   --fr\
+	   --summary-file ${ALIGNDIR}/${ID}_AlignStat.txt\
 	   -x $HISAT2_PREFIX\
 	   -1 ${TRIMDIR}/${ID}_ribotrim_R1.fq\
 	   -2 ${TRIMDIR}/${ID}_ribotrim_R2.fq\
