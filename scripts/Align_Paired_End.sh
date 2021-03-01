@@ -16,7 +16,8 @@ export HISAT2_INDEXES=/work/abf/MouseEnsembl101                    # Path to Gen
 export HISAT2_PREFIX=EnsMm_101      # Prefix for Hisat2 index
 export ALIGNDIR=$(pwd)/Alignments   # Path to alignment output directory
 export COUNTDIR=$(pwd)/Counts       # Path to count output directory
-export STRNGDIR=$(pwd)/Stringtie    # Path to Stringtie output directory
+export KLSTODIR=$(pwd)/Kallisto     # Path to Kallisto output directory
+export KLSTOIDX=/work/abf/MouseEnsembl101/EnsMm_101_Kallisto_total # Path to Kallisto Index
 export PRETRIM_QC=$(pwd)/PRE_FastQC      # Path to Pre Trim QC Output Directory
 export POSTTRIM_QC=$(pwd)/POST_FastQC # Path to Post Trimming FastQC(unify later)
 export GTFPATH=/work/abf/MouseEnsembl101/Mus_musculus.GRCm38.101.gtf    # Path to GTF File
@@ -38,7 +39,7 @@ fi
 
 ARR=($ALIGNDIR \
 	 $COUNTDIR \
-	 $STRNGDIR \
+	 $KLSTODIR \
 	 $PRETRIM_QC \
 	 $POSTTRIM_QC \
 	 $TRIMDIR \
@@ -61,7 +62,8 @@ do
     # Align Paired and reads to genome and quantify abundance
     R2=$(echo $R1 | sed 's/R1/R2/')
     echo "Running" sbatch PE_Hisat2_Htseq_Stringtie.sh $R1 $R2
-    JB=$(sbatch PE_Hisat2_Htseq_Stringtie.sh $R1 $R2 | gawk '{print $4}')
+    #JB=$(sbatch PE_Hisat2_Htseq_Stringtie.sh $R1 $R2 | gawk '{print $4}')
+    JB=$(sbatch PE_Ribo_PreFilter_Hisat2_Htseq.sh $R1 $R2 | gawk '{print $4}')
     JOBS=${JOBS},afterok:${JB}
 
     # Align Paired end reads to Ribosomal DNA fragment Rn45s
