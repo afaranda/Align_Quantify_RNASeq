@@ -33,15 +33,15 @@ multiqc -n $(pwd)/${PWD##*/}_ribo_multiqc\
 	--config $(pwd)/scripts/multiqc_ribo.yaml .
 
 # Iterate over tin.py results and move to results RSeQC Results Directory
-for f in $(find . -maxdepth 1 -regex .*sorted_alignment.summary.txt)
+for f in $(find . -maxdepth 1 -regex .*sorted_rf_alignment.summary.txt)
 do
-    fn=$(echo $f | sed 's/sorted_alignment/tin/'| sed 's/^\.\///')
+    fn=$(echo $f | sed 's/sorted_rf_alignment/tin/'| sed 's/^\.\///')
     mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
 done
 
-for f in $(find . -maxdepth 1 -regex .*sorted_alignment.tin.xls)
+for f in $(find . -maxdepth 1 -regex .*sorted_rf_alignment.tin.xls)
 do
-    fn=$(echo $f | sed 's/_sorted_alignment//'| sed 's/^\.\///')
+    fn=$(echo $f | sed 's/_sorted_rf_alignment//'| sed 's/^\.\///')
     mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
 done
 
