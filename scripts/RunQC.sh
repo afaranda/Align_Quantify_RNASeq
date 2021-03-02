@@ -6,20 +6,20 @@
 ANALYSISID=Main_All_Genes
 
 #Move slurm output to Alignment Directory
-JOBS=$(echo $JOBS | sed 's/afterok://g')
+#JOBS=$(echo $JOBS | sed 's/afterok://g')
 
-IFS="," read -ra jobs <<< "$JOBS"
-for j in ${jobs[@]}; do
-    ID=$(head -n 1 slurm-${j}.out)
-    mv slurm-${j}.out ${ALIGNDIR}/${ID}_AlignStat.txt
-done
+#IFS="," read -ra jobs <<< "$JOBS"
+#for j in ${jobs[@]}; do
+#    ID=$(head -n 1 slurm-${j}.out)
+#    mv slurm-${j}.out ${ALIGNDIR}/${ID}_AlignStat.txt
+#done
 
-ROBS=$(echo $ROBS | sed 's/afterok://g')
-IFS="," read -ra robs <<< "$ROBS"
-for j in ${robs[@]}; do
-    ID=$(head -n 1 slurm-${j}.out)
-    mv slurm-${j}.out ${ALIGNDIR}/${ID}_RiboAlignStat.txt
-done
+#ROBS=$(echo $ROBS | sed 's/afterok://g')
+#IFS="," read -ra robs <<< "$ROBS"
+#for j in ${robs[@]}; do
+#    ID=$(head -n 1 slurm-${j}.out)
+#    mv slurm-${j}.out ${ALIGNDIR}/${ID}_RiboAlignStat.txt
+#done
 
 # Run Rseqc modules
 $(pwd)/scripts/${RSEQCMOD}
