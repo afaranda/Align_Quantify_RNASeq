@@ -32,3 +32,10 @@ FastQC | https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
 Trim Galore! | https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/
 RSeQC | http://rseqc.sourceforge.net/
 MultiQC | https://multiqc.info/
+
+### Changelog
+
+**March 1, 2021 -- updated Paired End Pipeline**
+  * revised approach to ribosomal filtering
+  * added kallisto abundance estimates
+  * added DEGNorm analysis
