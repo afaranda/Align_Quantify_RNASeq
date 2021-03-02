@@ -63,76 +63,76 @@ read_GC.py\
 ## Calculate Summary Alignment statistics
 
 
-## Estimate Fraction of Ribosomal Alignments in Genomic Alignments
-genomic=${ID}_sorted_alignment.bam
-ribosomal=${ID}_sorted_ribo.bam
+# ## Estimate Fraction of Ribosomal Alignments in Genomic Alignments
+# genomic=${ID}_sorted_alignment.bam
+# ribosomal=${ID}_sorted_ribo.bam
 
-gawk -v FS="\t"\
-     'BEGIN {rc=0; fc=0}
-     (rc > FNR)\
-     {
-        fc ++
-        if(fc == 1)
-        {
-           unl[$1]
-        }
-        else
-        {
-           rib[$1]
-        }
-     }
-    {rc = FNR - 1}
-    (fc == 0){all[$1]}	
-    (fc == 1){gen[$1]}	
-    (fc == 2){rib[$1]}	
+# gawk -v FS="\t"\
+#      'BEGIN {rc=0; fc=0}
+#      (rc > FNR)\
+#      {
+#         fc ++
+#         if(fc == 1)
+#         {
+#            unl[$1]
+#         }
+#         else
+#         {
+#            rib[$1]
+#         }
+#      }
+#     {rc = FNR - 1}
+#     (fc == 0){all[$1]}	
+#     (fc == 1){gen[$1]}	
+#     (fc == 2){rib[$1]}	
     
-    END\
-    {
-        allCount = 0
-        genCount = 0
-        ribCount = 0
-        nulCount = 0
-        inxCount = 0
+#     END\
+#     {
+#         allCount = 0
+#         genCount = 0
+#         ribCount = 0
+#         nulCount = 0
+#         inxCount = 0
 
-        for(read in all)
-        {
-            allCount ++
-            if((read in rib) && (read in gen))
-            {
-               inxCount ++
-            }
-            else if((read in rib) && !(read in gen))
-            {
-               ribCount ++
-            }
-            else if(!(read in rib) && (read in gen))
-            {
-               genCount ++
-            }
-            else
-            {
-               nulCount ++
-            }
-        }
-        ribCheck = 0
-        for(read in rib)
-        {
-            ribCheck ++
-        }
+#         for(read in all)
+#         {
+#             allCount ++
+#             if((read in rib) && (read in gen))
+#             {
+#                inxCount ++
+#             }
+#             else if((read in rib) && !(read in gen))
+#             {
+#                ribCount ++
+#             }
+#             else if(!(read in rib) && (read in gen))
+#             {
+#                genCount ++
+#             }
+#             else
+#             {
+#                nulCount ++
+#             }
+#         }
+#         ribCheck = 0
+#         for(read in rib)
+#         {
+#             ribCheck ++
+#         }
         
-        genCheck = 0
-        for(read in gen)
-        {
-            genCheck ++
-        }
+#         genCheck = 0
+#         for(read in gen)
+#         {
+#             genCheck ++
+#         }
          
-        print allCount "\t" genCount "\t" inxCount "\t" ribCount "\t"\
-              nulCount "\t" ribCheck "\t" genCheck
-    }'\
-     <(samtools view ${ALIGNDIR}/${genomic})\
-     <(samtools view -F4 ${ALIGNDIR}/${genomic})\
-     <(samtools view -F4 ${ALIGNDIR}/${ribosomal})\
-     >${RSEQCDIR}/${ID}_ribosomal_reads_in_genomic.txt
+#         print allCount "\t" genCount "\t" inxCount "\t" ribCount "\t"\
+#               nulCount "\t" ribCheck "\t" genCheck
+#     }'\
+#      <(samtools view ${ALIGNDIR}/${genomic})\
+#      <(samtools view -F4 ${ALIGNDIR}/${genomic})\
+#      <(samtools view -F4 ${ALIGNDIR}/${ribosomal})\
+#      >${RSEQCDIR}/${ID}_ribosomal_reads_in_genomic.txt
 
 # genomic=${ID}_sorted_alignment.bam
 # ribosomal=${ID}_sorted_ribo.bam
