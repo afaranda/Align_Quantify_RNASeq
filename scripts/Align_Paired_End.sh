@@ -12,7 +12,7 @@
 # Define Main Directories
 export PATH=${PATH}:$(pwd)/scripts  # Add this pipeline to the executeable path
 export FASTQDIR=$(pwd)/fastq        # Path to directory with reads
-export HISAT2_INDEXES=/work/abf/MouseEnsembl101                    # Path to Genome Index Directory
+export HISAT2_INDEXES=/work/abf/MouseEnsembl101            # Path to Genome Index Directory
 export HISAT2_PREFIX=EnsMm_101      # Prefix for Hisat2 index
 export ALIGNDIR=$(pwd)/Alignments   # Path to alignment output directory
 export COUNTDIR=$(pwd)/Counts       # Path to count output directory
