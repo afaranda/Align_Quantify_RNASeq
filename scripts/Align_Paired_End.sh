@@ -77,4 +77,4 @@ done
 # Aggregate QC Results in One Place
 export JOBS=$(echo $JOBS | sed 's/,//')
 export ROBS=$(echo $ROBS | sed 's/,//')
-sbatch --dependency=${JOBS},${ROBS} RunQC.sh
+sbatch --dependency=${JOBS} RunQC.sh
