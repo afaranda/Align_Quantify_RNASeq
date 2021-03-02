@@ -50,14 +50,14 @@ echo -e $ribobed > ribo.bed
 
 ## Estimate Inner distances from each ribosomal alignment
 inner_distance.py\
-    -i ${ALIGNDIR}/${ID}_sorted_ribo.bam\
+    -i ${ALIGNDIR}/${ID}_byname_ribo.bam\
     -r ribo.bed\
     -o ${RSEQCDIR}/Ribo_${ID}
 rm ribo.bed
 
 ## Estimate GC Content of Ribosomal Alignments
 read_GC.py\
-    -i ${ALIGNDIR}/${ID}_sorted_ribo.bam\
+    -i ${ALIGNDIR}/${ID}_byname_ribo.bam\
     -o ${RSEQCDIR}/Ribo_${ID}
 
 ## Calculate Summary Alignment statistics
