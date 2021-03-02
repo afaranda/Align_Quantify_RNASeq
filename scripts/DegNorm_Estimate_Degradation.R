@@ -14,7 +14,7 @@ if(args[1] == "geno"){
 } else if(args[1] == "ribo"){
     bam_files <-paste(
         bam_path, 
-        list.files(bam_path, pattern="sorted_ribo\\.bam$"),
+        list.files(bam_path, pattern="sorted_rf_alignment\\.bam$"),
         sep="/"
     )
 

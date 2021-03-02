@@ -45,6 +45,9 @@ do
     mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
 done
 
+## Launch DegNorm
+sbatch run_degnorm.sh ribo
+
 # # Aggregate Ribosomal Content estimates
 # OUTFILE=${RSEQCDIR}/ribosomal_alignment_fractions.txt
 # echo -e "sample\ttotal\tonly_genomic\tgenomic_and_ribo\tonly_ribo\tno_alignment\tribo_check\tgenomic_check" >> $OUTFILE
