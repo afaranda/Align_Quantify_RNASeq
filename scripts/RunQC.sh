@@ -45,10 +45,10 @@ do
     mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
 done
 
-# Aggregate Ribosomal Content estimates
-OUTFILE=${RSEQCDIR}/ribosomal_alignment_fractions.txt
-echo -e "sample\ttotal\tonly_genomic\tgenomic_and_ribo\tonly_ribo\tno_alignment\tribo_check\tgenomic_check" >> $OUTFILE
-for f in $(find ${RSEQCDIR} -regex ".*ribosomal_reads_in_genomic.*")
-do
-    cat $f >> $OUTFILE
-done
+# # Aggregate Ribosomal Content estimates
+# OUTFILE=${RSEQCDIR}/ribosomal_alignment_fractions.txt
+# echo -e "sample\ttotal\tonly_genomic\tgenomic_and_ribo\tonly_ribo\tno_alignment\tribo_check\tgenomic_check" >> $OUTFILE
+# for f in $(find ${RSEQCDIR} -regex ".*ribosomal_reads_in_genomic.*")
+# do
+#     cat $f >> $OUTFILE
+# done
