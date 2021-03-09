@@ -61,7 +61,7 @@ for R1 in $(ls $FASTQDIR | grep $FQTARGET)
 do
     # Align Paired and reads to genome and quantify abundance
     R2=$(echo $R1 | sed 's/R1/R2/')
-    echo "Running" sbatch PE_Hisat2_Htseq_Stringtie.sh $R1 $R2
+    echo "Running" sbatch PE_Ribo_PreFilter_Hisat2_Htseq.sh $R1 $R2
     #JB=$(sbatch PE_Hisat2_Htseq_Stringtie.sh $R1 $R2 | gawk '{print $4}')
     JB=$(sbatch PE_Ribo_PreFilter_Hisat2_Htseq.sh $R1 $R2 | gawk '{print $4}')
     JOBS=${JOBS},afterok:${JB}
