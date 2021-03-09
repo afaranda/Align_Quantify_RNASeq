@@ -11,31 +11,25 @@ echo $ID
 if [ -f ${PRETRIM_QC}/${F1} ]
 then
     echo skipping pretrim FastQC for $1
-    echo skipping pretrim FastQC for $2
 else
     fastqc ${FASTQDIR}/${1} -o ${PRETRIM_QC}
-    fastqc ${FASTQDIR}/${2} -o ${PRETRIM_QC}
 fi
 
-## Get Trimmed Filenames
-R1=$(echo $1 | sed 's/\.fastq\.gz/_val_1.fq.gz/')
-R2=$(echo $2 | sed 's/\.fastq\.gz/_val_2.fq.gz/')
+## Get Trimmed Filename
+R1=$(echo $1 | sed 's/\.fastq\.gz/_trimmed.fq.gz/')
 
-## Trimgalore
+## Trimgalore Adjust parameters depending on
+## kit used (add clipping and change length for smarter stranded)
 if [ -f ${TRIMDIR}/${R1} ]
 then
     echo skipping trim for $ID
 else
     trim_galore -o $TRIMDIR \
-		--length 85 \
-		--paired \
-		--clip_R2 3 \
+		--length 35 \
 		--phred33 \
-		--cores 8 \
-		${FASTQDIR}/${1} \
-		${FASTQDIR}/${2}
+		--cores 8\
+		${FASTQDIR}/${1}
 fi
-
 
 ## Align Trimmed Reads To Ribosomal Index Using Hisat2
 if [ -f ${ALIGNDIR}/${ID}_byname_ribo.bam ]
@@ -49,8 +43,7 @@ else
 	   --fr\
 	   --summary-file ${ALIGNDIR}/${ID}_RiboAlignStat.txt\
 	   -x Rn45s_Index\
-	   -1 ${TRIMDIR}/${R1}\
-	   -2 ${TRIMDIR}/${R2}\
+	   -U ${TRIMDIR}/${R1}\
 	   -S ${ALIGNDIR}/${ID}_ribo_reads.sam
 
     ## compress, sort, and index alignments
@@ -70,30 +63,28 @@ then
 else
     bedtools bamtofastq\
 	     -i <(samtools view -h -f 13 ${ALIGNDIR}/${ID}_byname_ribo.bam)\
-	     -fq ${TRIMDIR}/${ID}_ribotrim_R1.fq\
-	     -fq2 ${TRIMDIR}/${ID}_ribotrim_R2.fq
-    
+	     -fq ${TRIMDIR}/${ID}_ribotrim_R1.fq
 fi
 
+## Get Trimmed Filename
+R1=${ID}_ribotrim_R1.fq
+
 ## Run Posttrim FastQC
-F1=$(echo $R1 | sed 's/_val_1\.fq\.gz/_ribotrim_R1_fastqc.html/')
+F1=$(echo $R1 | sed 's/\.fq/_fastqc.html/')
 if [ -f ${POSTTRIM_QC}/${F1} ]
 then
-    echo skipping posttrim QC ${ID}_ribotrim_R1.fq
-    echo skipping posttrim QC ${ID}_ribotrim_R2.fq
+    echo skipping posttrim QC $R1
 else
-    fastqc ${TRIMDIR}/${ID}_ribotrim_R1.fq -o ${POSTTRIM_QC}
-    fastqc ${TRIMDIR}/${ID}_ribotrim_R2.fq -o ${POSTTRIM_QC}
+    fastqc ${TRIMDIR}/${R1} -o ${POSTTRIM_QC}
 fi
 
 ## Align Trimmed Reads Using Hisat2
-if [ -f ${ALIGNDIR}/${ID}_sorted_alignment.bam ]
+if [ -f ${ALIGNDIR}/${ID}_sorted_rf_alignment.bam ]
 then
     echo skipping alignment for sample $ID
 else
     echo aligning to genome
     echo read1 file ${ID}_ribotrim_R1.fq
-    echo read2 file ${ID}_ribotrim_R2.fq
     
     hisat2 -p8\
 	   --verbose\
@@ -102,8 +93,7 @@ else
 	   --fr\
 	   --summary-file ${ALIGNDIR}/${ID}_AlignStat.txt\
 	   -x $HISAT2_PREFIX\
-	   -1 ${TRIMDIR}/${ID}_ribotrim_R1.fq\
-	   -2 ${TRIMDIR}/${ID}_ribotrim_R2.fq\
+	   -U ${TRIMDIR}/${ID}_ribotrim_R1.fq\
 	   --rna-strandness RF\
 	   -S ${ALIGNDIR}/${ID}_aligned_reads.sam
     
@@ -138,8 +128,8 @@ else
     mkdir ${KLSTODIR}/${ID}
     kallisto quant -i ${KLSTOIDX} -t 8 -b 25 --seed 8253\
 	     -o ${KLSTODIR}/${ID}\
-	     ${TRIMDIR}/${ID}_ribotrim_R1.fq\
-	     ${TRIMDIR}/${ID}_ribotrim_R2.fq
+	     -l 100 -s 15\
+	     ${TRIMDIR}/${ID}_ribotrim_R1.fq
 fi
 
 # Estimate Transcript Integrity using iteratively generated script

@@ -83,35 +83,45 @@ do
 	-i $b >> ${RSEQCDIR}/${ANALYSISID}_${fn}_bam_stats.txt
 done
 
-# Calculate Fragment Sizes
-for b in $(echo $bf | sed 's/,/ /g')
-do
-    fn=$(echo $b | sed "s|$ALIGNDIR/||g"| sed 's/_sorted_alignment\.bam//g')
-    RNA_fragment_size.py\
-        -i $b\
-	-r ${BEDPATH} >> ${RSEQCDIR}/${ANALYSISID}_${fn}_frag_sizes.txt
-done
+# # Calculate Fragment Sizes
+# for b in $(echo $bf | sed 's/,/ /g')
+# do
+#     fn=$(echo $b | sed "s|$ALIGNDIR/||g"| sed 's/_sorted_alignment\.bam//g')
+#     RNA_fragment_size.py\
+#         -i $b\
+# 	-r ${BEDPATH} >> ${RSEQCDIR}/${ANALYSISID}_${fn}_frag_sizes.txt
+# done
 
 # Estimate Transcript Integrity
-tin.py\
-    -i ${bf}\
-    -r ${BEDPATH}
+# tin.py\
+#     -i ${bf}\
+#     -r ${BEDPATH}
 
 # Iterate over tin.py results and move to results RSeQC Results Directory
-for f in $(find . -maxdepth 1 -regex .*sorted_alignment.summary.txt)
-do
-    fn=$(echo $f | sed 's/sorted_alignment/tin/'| sed 's/^\.\///')
-    mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
-done
+# for f in $(find . -maxdepth 1 -regex .*sorted_alignment.summary.txt)
+# do
+#     fn=$(echo $f | sed 's/sorted_alignment/tin/'| sed 's/^\.\///')
+#     mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
+# done
 
-for f in $(find . -maxdepth 1 -regex .*sorted_alignment.tin.xls)
-do
-    fn=$(echo $f | sed 's/_sorted_alignment//'| sed 's/^\.\///')
-    mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
-done
+# for f in $(find . -maxdepth 1 -regex .*sorted_alignment.tin.xls)
+# do
+#     fn=$(echo $f | sed 's/_sorted_alignment//'| sed 's/^\.\///')
+#     mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
+# done
 
 # Estimate Gene Body Coverage using the specified bed file
+# geneBody_coverage.py\
+#     -i ${bf}\
+#     -r ${BEDPATH}\
+#     -o ${RSEQCDIR}/${ANALYSISID}
+
 geneBody_coverage.py\
     -i ${bf}\
-    -r ${BEDPATH}\
-    -o ${RSEQCDIR}/${ANALYSISID}
+    -r /work/abf/MouseEnsembl101/rseqc_perinatal_lethal_models.bed\
+    -o ${RSEQCDIR}/${ANALYSISID}_lethal
+
+geneBody_coverage.py\
+    -i ${bf}\
+    -r /work/abf/MouseEnsembl101/rseqc_crystallin_transcript_models.bed\
+    -o ${RSEQCDIR}/${ANALYSISID}_crystallin
