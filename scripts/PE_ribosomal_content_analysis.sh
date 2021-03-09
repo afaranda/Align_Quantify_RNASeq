@@ -187,32 +187,32 @@ read_GC.py\
 #      >${RSEQCDIR}/${ID}_ribosomal_reads_in_genomic.txt
 # Subtract Ribosomal Reads from Genomic Alignments
 
-echo "removing reads aligned in" ${ribosomal} "from" ${genomic}
-echo 
+# echo "removing reads aligned in" ${ribosomal} "from" ${genomic}
+# echo 
 
-gawk '\
-     (NR == FNR) {tag[$1]; next}
-     (NR != FNR && $1 ~/^@/){print $0; next}
-     (NR != FNR && !($1 in tag)){print $0}
-     '\
-     <(samtools view -F4 ${ALIGNDIR}/${ribosomal})\
-     <(samtools view -h ${ALIGNDIR}/${genomic})\
-     | samtools view -b -o ${ALIGNDIR}/${ID}_ribo_filtered_alignment.bam
+# gawk '\
+#      (NR == FNR) {tag[$1]; next}
+#      (NR != FNR && $1 ~/^@/){print $0; next}
+#      (NR != FNR && !($1 in tag)){print $0}
+#      '\
+#      <(samtools view -F4 ${ALIGNDIR}/${ribosomal})\
+#      <(samtools view -h ${ALIGNDIR}/${genomic})\
+#      | samtools view -b -o ${ALIGNDIR}/${ID}_ribo_filtered_alignment.bam
 
-# Index filtered bam File
-samtools index ${ALIGNDIR}/${ID}_ribo_filtered_alignment.bam
+# # Index filtered bam File
+# samtools index ${ALIGNDIR}/${ID}_ribo_filtered_alignment.bam
 
-# Generate Counts from Ribo-stripped alignments
-if [ -f ${COUNTDIR}/${ID}_RiboFilterGeneCount.txt ]
-then
-    echo skipping htseq-count for ${ID}_ribo_filtered_alignment.bam
-else
-    echo counting ${ID}_ribo_filtered_alignment.bam
-    htseq-count \
-	-i gene_id -r pos -f bam -s reverse -m union --type exon \
-	${ALIGNDIR}/${ID}_ribo_filtered_alignment.bam \
-	$GTFPATH > ${COUNTDIR}/${ID}_RiboFilterGeneCount.txt
-fi
+# # Generate Counts from Ribo-stripped alignments
+# if [ -f ${COUNTDIR}/${ID}_RiboFilterGeneCount.txt ]
+# then
+#     echo skipping htseq-count for ${ID}_ribo_filtered_alignment.bam
+# else
+#     echo counting ${ID}_ribo_filtered_alignment.bam
+#     htseq-count \
+# 	-i gene_id -r pos -f bam -s reverse -m union --type exon \
+# 	${ALIGNDIR}/${ID}_ribo_filtered_alignment.bam \
+# 	$GTFPATH > ${COUNTDIR}/${ID}_RiboFilterGeneCount.txt
+# fi
 
 
 
