@@ -5,14 +5,21 @@
 #RSEQCDIR=$(pwd)/RSeQC_Results
 ANALYSISID=Main_All_Genes
 
-#Move slurm output to Alignment Directory
-#JOBS=$(echo $JOBS | sed 's/afterok://g')
+if [ -z "$KLSTODIR" ]
+then
+    KLSTODIR=$(pwd)/Kallisto
+fi
 
-#IFS="," read -ra jobs <<< "$JOBS"
-#for j in ${jobs[@]}; do
-#    ID=$(head -n 1 slurm-${j}.out)
-#    mv slurm-${j}.out ${ALIGNDIR}/${ID}_AlignStat.txt
-#done
+#Move slurm output to Alignment Directory
+JOBS=$(echo $JOBS | sed 's/afterok://g')
+
+IFS="," read -ra jobs <<< "$JOBS"
+for j in ${jobs[@]}; do
+    ID=$(head -n 1 slurm-${j}.out)
+    sed 's/\r//g' slurm-${j}.out\
+	| gawk '/\[quant\]/ {print $0}' > ${KLSTODIR}/${ID}/${ID}_KallistoStat.txt
+    rm slurm-${j}.out
+done
 
 #ROBS=$(echo $ROBS | sed 's/afterok://g')
 #IFS="," read -ra robs <<< "$ROBS"
