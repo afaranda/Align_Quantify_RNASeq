@@ -62,7 +62,7 @@ then
     echo skipping alignment for sample $ID
 else
     bedtools bamtofastq\
-	     -i <(samtools view -h -f 13 ${ALIGNDIR}/${ID}_byname_ribo.bam)\
+	     -i <(samtools view -h -f 4 ${ALIGNDIR}/${ID}_byname_ribo.bam)\
 	     -fq ${TRIMDIR}/${ID}_ribotrim_R1.fq
 fi
 
@@ -71,7 +71,7 @@ R1=${ID}_ribotrim_R1.fq
 
 ## Run Posttrim FastQC
 F1=$(echo $R1 | sed 's/\.fq/_fastqc.html/')
-if [ -f ${POSTTRIM_QC}/${F1} ]
+if [ -f ${POSTTRIM_QC}/${ID}_ribotrim_R1_fastqc.html ]
 then
     echo skipping posttrim QC $R1
 else
@@ -127,6 +127,7 @@ then
 else
     mkdir ${KLSTODIR}/${ID}
     kallisto quant -i ${KLSTOIDX} -t 8 -b 25 --seed 8253\
+	     --single\
 	     -o ${KLSTODIR}/${ID}\
 	     -l 100 -s 15\
 	     ${TRIMDIR}/${ID}_ribotrim_R1.fq
