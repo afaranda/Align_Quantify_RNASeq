@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=degnorm
-#SBATCH --mem=128000
+#SBATCH --mem=512000
 #SBATCH --ntasks=8
 
 # Call R script encapsulating DegNorm process
