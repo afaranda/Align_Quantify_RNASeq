@@ -18,7 +18,7 @@ for j in ${jobs[@]}; do
     ID=$(head -n 1 slurm-${j}.out)
     sed 's/\r//g' slurm-${j}.out\
 	| gawk '/\[quant\]/ {print $0}' > ${KLSTODIR}/${ID}/${ID}_KallistoStat.txt
-    rm slurm-${j}.out
+    #rm slurm-${j}.out
 done
 
 #ROBS=$(echo $ROBS | sed 's/afterok://g')
@@ -51,6 +51,9 @@ do
     fn=$(echo $f | sed 's/_sorted_rf_alignment//'| sed 's/^\.\///')
     mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
 done
+
+## Launch DEXSeq Analysis Builder
+sbatch run_DEXSeq.sh
 
 ## Launch DegNorm
 sbatch run_degnorm.sh ribo
