@@ -33,7 +33,17 @@ Trim Galore! | https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/
 RSeQC | http://rseqc.sourceforge.net/
 MultiQC | https://multiqc.info/
 
+### To Do
+  * Fix call to dexseq_counts.py to point to packaged installation
+  * setup per-sample workflows to define environment variables independently
+  * dockerize pipeline
+
 ### Changelog
+
+**April 19, 2021 -- Added DEXSeq Analysis**
+  * Added DEXSeq analysis to paired and single end pipelines
+  * Added generic R script for running differential Exon Analysis
+  * Copied dexseq_counts.py from dexseq package
 
 **March 1, 2021 -- updated Paired End Pipeline**
   * revised approach to ribosomal filtering
