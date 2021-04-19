@@ -119,6 +119,17 @@ else
 	$GTFPATH > ${COUNTDIR}/${ID}_rf_GeneCount.txt
 fi
 
+## Get Exon Level Counts with DEXSeq
+if [ -f ${COUNTDIR}/${ID}_rf_DEXSeq_Counts.txt ]
+then
+    echo skipping DEXSeq count for $ID
+else
+    python3 scripts/dexseq_count.py\
+	    -p yes -s reverse -f bam -r pos\
+	    $DEXPATH ${ALIGNDIR}/${ID}_sorted_rf_alignment.bam \
+	    ${COUNTDIR}/${ID}_rf_DEXSeq_Counts.txt
+fi
+
 ## Estimate Transcript Abundances with Kallisto
 # Call stringtie on the target bam file
 if [ -f ${KLSTODIR}/${ID}/abundances.txt ]
