@@ -21,6 +21,7 @@ export KLSTOIDX=/work/abf/MouseEnsembl101/EnsMm_101_Kallisto_total # Path to Kal
 export PRETRIM_QC=$(pwd)/PRE_FastQC      # Path to Pre Trim QC Output Directory
 export POSTTRIM_QC=$(pwd)/POST_FastQC # Path to Post Trimming FastQC(unify later)
 export GTFPATH=/work/abf/MouseEnsembl101/Mus_musculus.GRCm38.101.gtf    # Path to GTF File
+export DEXPATH=/work/abf/MouseEnsembl101/Ens_Mm101_DEXSeq_Annot.gff     # Path to DEXSeq GTF
 export RSEQCDIR=$(pwd)/RSeQC_Results        # Path to RSeQC results
 export BEDPATH=/work/abf/MouseEnsembl101/rseqc_gene_models.bed # Path to bed file for RSeQC
 export TRIMDIR=$(pwd)/Trimmed   # Path to Trimmed Reads Directory
