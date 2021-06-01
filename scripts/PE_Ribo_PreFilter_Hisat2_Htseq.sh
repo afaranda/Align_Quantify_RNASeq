@@ -153,5 +153,11 @@ else
 	     ${TRIMDIR}/${ID}_ribotrim_R2.fq
 fi
 
+
 # Estimate Transcript Integrity using iteratively generated script
-tin.py -i ${ALIGNDIR}/${ID}_sorted_rf_alignment.bam -r $BEDPATH
+if [ -f ${ID}_sorted_rf_alignment.tin.xls ]
+then
+   echo skipping TIN for $ID
+else
+    tin.py -i ${ALIGNDIR}/${ID}_sorted_rf_alignment.bam -r $BEDPATH
+fi
