@@ -12,18 +12,18 @@
 # Define Main Directories
 export PATH=${PATH}:$(pwd)/scripts  # Add this pipeline to the executeable path
 export FASTQDIR=$(pwd)/fastq        # Path to directory with reads
-export HISAT2_INDEXES=/work/abf/MouseEnsembl101            # Path to Genome Index Directory
-export HISAT2_PREFIX=EnsMm_101      # Prefix for Hisat2 index
+export HISAT2_INDEXES=/work/abf/MouseEnsembl104            # Path to Genome Index Directory
+export HISAT2_PREFIX=EnsMm_104      # Prefix for Hisat2 index
 export ALIGNDIR=$(pwd)/Alignments   # Path to alignment output directory
 export COUNTDIR=$(pwd)/Counts       # Path to count output directory
 export KLSTODIR=$(pwd)/Kallisto     # Path to Kallisto output directory
-export KLSTOIDX=/work/abf/MouseEnsembl101/EnsMm_101_Kallisto_total # Path to Kallisto Index
+export KLSTOIDX=/work/abf/MouseEnsembl104/EnsMm_104_Kallisto_total # Path to Kallisto Index
 export PRETRIM_QC=$(pwd)/PRE_FastQC      # Path to Pre Trim QC Output Directory
 export POSTTRIM_QC=$(pwd)/POST_FastQC # Path to Post Trimming FastQC(unify later)
-export GTFPATH=/work/abf/MouseEnsembl101/Mus_musculus.GRCm38.101.gtf    # Path to GTF File
-export DEXPATH=/work/abf/MouseEnsembl101/Ens_Mm101_DEXSeq_Annot.gff     # Path to DEXSeq GTF
+export GTFPATH=/work/abf/MouseEnsembl104/Mus_musculus.GRCm39.104.gtf    # Path to GTF File
+export DEXPATH=/work/abf/MouseEnsembl104/EnsMm_104_DEXSeq_Annot.gff     # Path to DEXSeq GTF
 export RSEQCDIR=$(pwd)/RSeQC_Results        # Path to RSeQC results
-export BEDPATH=/work/abf/MouseEnsembl101/rseqc_gene_models.bed # Path to bed file for RSeQC
+export BEDPATH=/work/abf/MouseEnsembl104/rseqc_gene_models.bed # Path to bed file for RSeQC
 export TRIMDIR=$(pwd)/Trimmed   # Path to Trimmed Reads Directory
 export FQTARGET="L[0-9]\{3\}_R1_[0-9]\{3\}\.fastq\.gz"  # Regex for fastq files
 export DELOLD=0 # Set to 1 to delete previous results
