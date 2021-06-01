@@ -40,7 +40,7 @@ dxd <- DEXSeqDataSetFromHTSeq(
   countfiles = samples$countFile,
   sampleData = samples,
   design = ~ sample + exon + group:exon,
-  flattenedfile = "/work/abf/MouseEnsembl101/Ens_Mm101_DEXSeq_Annot.gff"
+  flattenedfile = "/work/abf/MouseEnsembl104/EnsMm_104_DEXSeq_Annot.gff"
 )
 
 #gid<-unique(geneIDs(dxd))[1:10]
