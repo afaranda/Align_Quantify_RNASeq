@@ -1,7 +1,7 @@
 library(DegNorm)
 args <- commandArgs(trailingOnly=TRUE)
 wd <- getwd()
-gtf_file <- "/work/abf/MouseEnsembl101/Mus_musculus.GRCm38.101.gtf"
+gtf_file <- "/work/abf/MouseEnsembl104/Mus_musculus.GRCm39.104.gtf"
 bam_path <- paste(wd, "Alignments", sep="/")
 
 # Use a commandline argument to specify ribosomal or all-genomic alignments
