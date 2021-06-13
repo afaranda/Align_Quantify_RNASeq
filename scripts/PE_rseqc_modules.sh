@@ -100,5 +100,5 @@ done
 
 geneBody_coverage.py\
     -i ${bf}\
-    -r /work/abf/MouseEnsembl101/rseqc_crystallin_transcript_models.bed\
+    -r /work/abf/MouseEnsembl104/rseqc_crystallin_transcript_models.bed\
     -o ${RSEQCDIR}/${ANALYSISID}_crystallin
