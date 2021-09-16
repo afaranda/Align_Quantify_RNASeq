@@ -36,7 +36,6 @@ else
 		${FASTQDIR}/${2}
 fi
 
-
 ## Align Trimmed Reads To Ribosomal Index Using Hisat2
 if [ -f ${ALIGNDIR}/${ID}_byname_ribo.bam ]
 then
@@ -86,7 +85,50 @@ else
     fastqc ${TRIMDIR}/${ID}_ribotrim_R2.fq -o ${POSTTRIM_QC}
 fi
 
-## Align Trimmed Reads Using Hisat2
+## Align Unfiltered Trimmed Reads Using Hisat2
+if [ -f ${ALIGNDIR}/${ID}_sorted_gn_alignment.bam ]
+then
+    echo skipping alignment for sample $ID
+else
+    echo aligning to gnme
+    echo read1 file ${R1}
+    echo read2 file ${R2}
+    
+    hisat2 -p8\
+	   --verbose\
+	   --phred33\
+	   --dta\
+	   --fr\
+	   --summary-file ${ALIGNDIR}/${ID}_gn_AlignStat.txt\
+	   -x $HISAT2_PREFIX\
+	   -1 ${TRIMDIR}/${R1}\
+	   -2 ${TRIMDIR}/${R2}\
+	   --rna-strandness RF\
+	   -S ${ALIGNDIR}/${ID}_aligned_reads.sam
+    
+    ## compress, sort, and index alignments
+    samtools view -@ 8 -bS ${ALIGNDIR}/${ID}_aligned_reads.sam > ${ALIGNDIR}/${ID}_aligned_reads.bam
+    
+    samtools sort -@ 8 -m 12G -o ${ALIGNDIR}/${ID}_sorted_gn_alignment.bam ${ALIGNDIR}/${ID}_aligned_reads.bam
+    
+    samtools index ${ALIGNDIR}/${ID}_sorted_gn_alignment.bam
+    
+    rm ${ALIGNDIR}/${ID}_aligned_reads.bam ${ALIGNDIR}/${ID}_aligned_reads.sam
+fi
+
+## Get Gene-level counts with Htseq Count
+# Call htseq-count on the target bam file
+if [ -f ${COUNTDIR}/${ID}_gn_GeneCount.txt ]
+then
+    echo skipping htseq-count for $ID
+else
+    htseq-count \
+	-i gene_id -r pos -f bam -s reverse -m union --type exon \
+	${ALIGNDIR}/${ID}_sorted_gn_alignment.bam \
+	$GTFPATH > ${COUNTDIR}/${ID}_gn_GeneCount.txt
+fi
+
+## Align Trimmed and Rn45s Filtered Reads Using Hisat2
 if [ -f ${ALIGNDIR}/${ID}_sorted_alignment.bam ]
 then
     echo skipping alignment for sample $ID
@@ -117,7 +159,7 @@ else
     rm ${ALIGNDIR}/${ID}_aligned_reads.bam ${ALIGNDIR}/${ID}_aligned_reads.sam
 fi
 
-## Get Gene-level counts with Htseq Count
+## Get Gene-level counts on Trimmed and Filtered reads  with Htseq Count
 # Call htseq-count on the target bam file
 if [ -f ${COUNTDIR}/${ID}_rf_GeneCount.txt ]
 then
@@ -153,11 +195,10 @@ else
 	     ${TRIMDIR}/${ID}_ribotrim_R2.fq
 fi
 
-
 # Estimate Transcript Integrity using iteratively generated script
-if [ -f ${ID}_sorted_rf_alignment.tin.xls ]
-then
-   echo skipping TIN for $ID
-else
-    tin.py -i ${ALIGNDIR}/${ID}_sorted_rf_alignment.bam -r $BEDPATH
-fi
+# if [ -f ${ID}_sorted_rf_alignment.tin.xls ]
+# then
+#    echo skipping TIN for $ID
+# else
+#     tin.py -i ${ALIGNDIR}/${ID}_sorted_rf_alignment.bam -r $BEDPATH
+# fi
