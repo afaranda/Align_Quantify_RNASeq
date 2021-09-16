@@ -8,7 +8,7 @@ bam_path <- paste(wd, "Alignments", sep="/")
 if(args[1] == "geno"){
     bam_files <-paste(
         bam_path, 
-        list.files(bam_path, pattern="sorted_alignment\\.bam$"),
+        list.files(bam_path, pattern="sorted_gn_alignment\\.bam$"),
         sep="/"
     )
 } else if(args[1] == "ribo"){
