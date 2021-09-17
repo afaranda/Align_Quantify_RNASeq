@@ -5,21 +5,21 @@
 #RSEQCDIR=$(pwd)/RSeQC_Results
 ANALYSISID=Main_All_Genes
 
-if [ -z "$KLSTODIR" ]
-then
-    KLSTODIR=$(pwd)/Kallisto
-fi
+# if [ -z "$KLSTODIR" ]
+# then
+#     KLSTODIR=$(pwd)/Kallisto
+# fi
 
 #Move slurm output to Alignment Directory
 JOBS=$(echo $JOBS | sed 's/afterok://g')
 
-IFS="," read -ra jobs <<< "$JOBS"
-for j in ${jobs[@]}; do
-    ID=$(head -n 1 slurm-${j}.out)
-    sed 's/\r//g' slurm-${j}.out\
-	| gawk '/\[quant\]/ {print $0}' > ${KLSTODIR}/${ID}/${ID}_KallistoStat.txt
-    #rm slurm-${j}.out
-done
+# IFS="," read -ra jobs <<< "$JOBS"
+# for j in ${jobs[@]}; do
+#     ID=$(head -n 1 slurm-${j}.out)
+#     sed 's/\r//g' slurm-${j}.out\
+# 	| gawk '/\[quant\]/ {print $0}' > ${KLSTODIR}/${ID}/${ID}_KallistoStat.txt
+#     #rm slurm-${j}.out
+# done
 
 #ROBS=$(echo $ROBS | sed 's/afterok://g')
 #IFS="," read -ra robs <<< "$ROBS"
@@ -28,32 +28,36 @@ done
 #    mv slurm-${j}.out ${ALIGNDIR}/${ID}_RiboAlignStat.txt
 #done
 
-# Run Rseqc modules
-$(pwd)/scripts/${RSEQCMOD}
+# # Run Rseqc modules
+# $(pwd)/scripts/${RSEQCMOD}
 
-# Aggregate QC Results for Main Analysis
-multiqc -n $(pwd)/${PWD##*/}_multiqc\
-	--config $(pwd)/scripts/multiqc_config.yaml .
+# # Aggregate QC Results for Main Analysis
+# multiqc -n $(pwd)/${PWD##*/}_multiqc\
+# 	--config $(pwd)/scripts/multiqc_config.yaml .
+
+# # Aggregate QC Results for Ribosomal Analysis
+# multiqc -n $(pwd)/${PWD##*/}_ribo_multiqc\
+# 	--config $(pwd)/scripts/multiqc_ribo.yaml .
 
 # Aggregate QC Results for Ribosomal Analysis
-multiqc -n $(pwd)/${PWD##*/}_ribo_multiqc\
-	--config $(pwd)/scripts/multiqc_ribo.yaml .
+multiqc -n $(pwd)/${PWD##*/}_geno_multiqc\
+	--config $(pwd)/scripts/multiqc_geno.yaml .
 
 # Iterate over tin.py results and move to results RSeQC Results Directory
-for f in $(find . -maxdepth 1 -regex .*sorted_rf_alignment.summary.txt)
-do
-    fn=$(echo $f | sed 's/sorted_rf_alignment/tin/'| sed 's/^\.\///')
-    mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
-done
+# for f in $(find . -maxdepth 1 -regex .*sorted_rf_alignment.summary.txt)
+# do
+#     fn=$(echo $f | sed 's/sorted_rf_alignment/tin/'| sed 's/^\.\///')
+#     mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
+# done
 
-for f in $(find . -maxdepth 1 -regex .*sorted_rf_alignment.tin.xls)
-do
-    fn=$(echo $f | sed 's/_sorted_rf_alignment//'| sed 's/^\.\///')
-    mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
-done
+# for f in $(find . -maxdepth 1 -regex .*sorted_rf_alignment.tin.xls)
+# do
+#     fn=$(echo $f | sed 's/_sorted_rf_alignment//'| sed 's/^\.\///')
+#     mv $f ${RSEQCDIR}/${ANALYSISID}_${fn}
+# done
 
 ## Launch DEXSeq Analysis Builder
-sbatch run_DEXSeq.sh
+#sbatch run_DEXSeq.sh
 
 ## Launch DegNorm
 sbatch run_degnorm.sh ribo

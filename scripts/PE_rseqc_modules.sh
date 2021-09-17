@@ -11,7 +11,7 @@
 # Uncomment and edit the following variables if running standalone
 # export ALIGNDIR=$(pwd)/Alignments
 # export RSEQCDIR=$(pwd)/RSeQC_Results
-# export BEDPATH=/work/abf/MouseEnsembl100/rseqc_gene_models.bed
+# export BEDPATH=/work/abf/MouseEnsembl104/rseqc_gene_models.bed
 export ANALYSISID=Main_All_Genes
 export FILTER_BED=0 # Set to 1 if bam files should be filtered
 

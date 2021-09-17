@@ -1,0 +1,18 @@
+module_order:
+    - hisat2:
+        path_filters:
+            - '*_gn_AlignStat.txt'
+    - htseq:
+        path_filters:
+            - '*_gn_GeneCount.txt'
+fn_ignore_dirs:
+    - 'PRE_FastQC'
+    - 'POST_FastQC'
+    - 'Trimmed'
+extra_fn_clean_exts:
+    - type: regex
+      pattern: '_L[0-9]{3}_R[12]_[0-9]{3}'
+    - type: regex
+      pattern: 'Ribo_'
+    - type: regex
+      pattern: '_bam_stats'

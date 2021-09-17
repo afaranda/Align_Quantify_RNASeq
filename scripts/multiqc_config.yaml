@@ -20,6 +20,7 @@ module_order:
 fn_ignore_files:
     - '*Ribo*'
     - 'slurm*out'
+    - '*_gn_*'
 extra_fn_clean_exts:
     - '_AlignStat.txt'
     - '_rf_GeneCount.txt'
