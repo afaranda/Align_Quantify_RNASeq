@@ -32,60 +32,20 @@ BEGIN {
     gid++;
 
     # Add exon, indexed by gene and record number
-    exons[$gid][NR]=$0;
-
-    
-    # eid=1;
-    
-    # while($eid != "exon_id" && eid < NF){
-    # 	eid++;
-    # }
-    
-    # ## Add Exon Row to array
-    # gid++;
-    # eid++;
-
-    # ## Index exon records by exon ID
-    # exon_row[$eid]=$0;
-
-    # ## Index exons on a chromosome
-    # chrom[$1];
-    # exon_chrom[$eid]=$1;
-
-    # ## Index exons in a gene
-    # gene[$gid];
-    # exon_gene[$eid]=$gid;
-
-    # ## Index exons in a gene by start position
-    # exon_start[$eid]=$4;
-    
+    exons[$gid][NR]=$0;    
 }
 
+
 END {
-   ## Iterate over chromosomes
-   ##   Iterate over gene id's
-   ##       Write rows sorted by start to temp file
-
-   ## Call bedtools merge on the temp file and
-   ## append output to result file
-
-   ##
-#    for(chrom in exons){
-#        for(gene in exons[chrom]){
-# 	   for(eid in exons[chrom][gene]){
-# #	       X=exons[chrom][gene];
-# 	       for(eid in exons[chrom][gene]){
-# 		   X[0]=0
-# 		   X=exons[chrom][gene];
-# 		   print(chrom, gene, eid, X[eid]);
-# 	       }
-# 	   }
-#        }
-#    }
-
-
-
-
-
-
+    for(g in exons){
+        for(r in exons[g]){
+	    printf exons[g][r]"\n" >> "temp.bed";
+	}
+	system("bedtools sort -i temp.bed > sorted.bed");
+	system("bedtools merge -o distinct -c 7 -i sorted.bed >> result.bed");
+	close("temp.bed");
+	close("sorted.bed");
+	system("rm temp.bed");
+	system("rm sorted.bed");
+    }
 }
