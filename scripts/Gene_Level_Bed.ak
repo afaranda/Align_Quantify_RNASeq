@@ -49,7 +49,7 @@ BEGIN {
     gsub("\042","",$tid)
     gsub("\042","",$eid)
     # Add exon, indexed by gene and record number
-    exons_g[$gid][NR]=$1"\t"$4"\t"$5"\t"$gid"\t"".""\t"$7;
+    exons_g[$gid][NR]=$1"\t"$4 - 1"\t"$5"\t"$gid"\t"".""\t"$7;
 
     # Index start and end positions of exons      
     ex_start[$tid][$eid]=$4;
