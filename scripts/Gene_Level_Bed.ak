@@ -31,21 +31,102 @@ BEGIN {
     }
     gid++;
 
+    ## Iterate over fields to find transcript_id
+    tid=1;
+    while ($tid != "transcript_id"){
+	tid++;
+    }
+    tid++;
+
+    ## Iterate over fields to find exon_id
+    eid=1;
+    while ($eid != "exon_id"){
+	eid++;
+    }
+    eid++;
+
+    gsub("\042","",$gid)
+    gsub("\042","",$tid)
+    gsub("\042","",$eid)
     # Add exon, indexed by gene and record number
-    exons[$gid][NR]=$0;    
+    exons_g[$gid][NR]=$1"\t"$4"\t"$5"\t"$gid"\t"".""\t"$7;
+    # exons_t[$tid][NR]=$1"\t"$4"\t"$5"\t"$tid"\t"".""\t"$7;
+
+    # Index start and end positions of exons      
+    ex_start[$tid][$eid]=$4;
+    ex_end[$tid][$eid]=$5;
+    
+}
+
+($3 ~ /transcript/){
+    ## Iterate over fields to find transcript_id
+    tid=1;
+    while ($tid != "transcript_id"){
+	tid++;
+    }
+    tid++;
+    gsub("\042","",$tid)
+    ## Store transcript record
+    tx[$tid]=$1"\t"$4 - 1"\t"$5"\t"$tid"\t"".""\t"$7;
+}
+
+($3 ~ /gene/){
+    ## Iterate over fields to find gene_id
+    gid=1;
+    while($gid != "gene_id"){
+	gid++;	  
+    }
+    gid++;
+
+    ## Store gene record
+    gn[$gid]=$1"\t"$4"\t"$5"\t"$gid"\t"".""\t"$7;
 }
 
 
 END {
-    for(g in exons){
-        for(r in exons[g]){
-	    printf exons[g][r]"\n" >> "temp.bed";
+
+    ## Write collapsed gene-level BED file to store flattened exons
+    for(g in exons_g){
+        for(r in exons_g[g]){
+	    printf exons_g[g][r]"\n" >> "temp.bed";
 	}
 	system("bedtools sort -i temp.bed > sorted.bed");
-	system("bedtools merge -o distinct -c 7 -i sorted.bed >> result.bed");
+	call="bedtools merge -o distinct -c 4,5,6 -i sorted.bed >> result.bed"
+	system(call);
 	close("temp.bed");
 	close("sorted.bed");
 	system("rm temp.bed");
 	system("rm sorted.bed");
     }
+
+    ## Write Transcripts to a file in BED12 format
+    for(tid in ex_start){
+     
+	# Sort exons of a transcript in ascending numerical order 
+	m=asort(ex_start[tid],exs,"@val_num_asc");
+	n=asort(ex_end[tid],exe,"@val_num_asc");
+	
+	# Split fields from the corresponding transcript record
+	o=split(tx[tid],tx_row,"\t");
+	
+	# Write fields to BED12 file
+	for(i=1; i < 4; i++){
+	    printf tx_row[i]"\t" >> "rseqc_transcripts.bed";
+	}
+	printf tid"\t""0""\t"tx_row[6]"\t" >> "rseqc_transcripts.bed";
+	
+	for(i=2; i < 4; i++){
+	    printf tx_row[i]"\t" >> "rseqc_transcripts.bed";
+	}
+	printf "0""\t"m"\t" >> "rseqc_transcripts.bed";
+	for(i=1; i <=m; i++){
+	    printf (exe[i] - (exs[i] - 1))"," >> "rseqc_transcripts.bed";
+	}
+	printf("\t") >> "rseqc_transcripts.bed";
+	for(i=1; i <=m; i++){
+	    printf ((exs[i] -1) - tx_row[2])"," >> "rseqc_transcripts.bed";
+	}
+	printf("\n")  >> "rseqc_transcripts.bed";
+    }
+    close("rseqc_transcripts.bed");
 }
