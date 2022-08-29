@@ -1,7 +1,7 @@
 #!/usr/bin/gawk -f
 ###################################################################
 #
-# File: Gene_Level_Bed.ak
+# File: Process_GTF_File.ak
 # Purpose: Collapse exons in GTF file from transcripts to genes
 #          and store resulting intervals in a BED file
 # Created: August 24, 2022
@@ -15,6 +15,8 @@
 ## Set delimiters and environment variables
 BEGIN {
     FS="\t| |; ";
+    genome="/work/abf/MouseEnsembl104";
+    genome=genome"/Mus_musculus.GRCm39.dna.primary_assembly.fa";
 }
 
 ## At each record with the value "exon" in field 3
@@ -92,14 +94,14 @@ END {
 	    printf exons_g[g][r]"\n" >> "temp.bed";
 	}
 	system("bedtools sort -i temp.bed > sorted.bed");
-	call="bedtools merge -s -o distinct -c 4,5,6 -i sorted.bed >> result.bed"
+	call="bedtools merge -s -o distinct -c 4,5,6 -i sorted.bed >> flat_exons.bed"
 	system(call);
 	close("temp.bed");
 	close("sorted.bed");
 	system("rm temp.bed");
 	system("rm sorted.bed");
     }
-    close("result.bed");
+    close("flat_exons.bed");
     
     ## Write Transcripts to a file in BED12 format
     for(tid in ex_start){
@@ -133,14 +135,14 @@ END {
     close("rseqc_transcripts.bed");
 
     ## Load "gene level collapsed exons into an array"
-    flag=(getline line < "result.bed");
+    flag=(getline line < "flat_exons.bed");
     idx=0;
     print(line)
     while(flag == 1){
 	print("line in loop "line);
 	idx++;
 	gene_bed[idx] = line;
-	flag=(getline line < "result.bed");
+	flag=(getline line < "flat_exons.bed");
     }
 
     ## Index start and stop positions from gene level bed
@@ -180,4 +182,34 @@ END {
 	printf("\n")  >> "rseqc_genes.bed";
     }
     close("rseqc_genes.bed");
+
+    ## Calculate exon lengths and nucleotide content
+    call="bedtools nuc -fi "genome" -bed flat_exons.bed";
+    call=call" > nuc_exons.bed";
+    system(call);
+
+    ## Calculate Gene Level length and nucleotide counts
+    call="bedtools groupby -i nuc_exons.bed ";
+    call=call"-g 4 -o sum -c 9,10,11,12,13,14,15 > ";
+    call=call"nuc_gene.tsv"
+    system(call);
+
+    ## Load gene level nucleotide counts
+    line=""
+    flag=(getline line < "nuc_gene.tsv");
+    idx=0;
+    while(flag == 1){
+	idx++;
+	nuc_exon[idx] = line;
+	flag=(getline line < "nuc_gene.tsv");
+    }
+
+    ## Calculate GC Percentage and write to file
+    for(nuc_row in nuc_exon){
+	m=split(nuc_row,"\t",row);
+	GC = (row[3] + row[4]) / row[8];
+	new_row=row[1]"\t"row[8]"\t"GC;
+	printf(new_row"\n") >> "Gene_Length_GC.tsv";
+    }
+    close("Gene_Length_GC.tsv");    
 }
