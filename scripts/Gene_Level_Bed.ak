@@ -200,13 +200,13 @@ END {
     idx=0;
     while(flag == 1){
 	idx++;
-	nuc_exon[idx] = line;
+	nuc_gene[idx] = line;
 	flag=(getline line < "nuc_gene.tsv");
     }
 
     ## Calculate GC Percentage and write to file
-    for(nuc_row in nuc_exon){
-	m=split(nuc_row,"\t",row);
+    for(nuc_row in nuc_gene){
+	m=split(nuc_gene[nuc_row],row,"\t");
 	GC = (row[3] + row[4]) / row[8];
 	new_row=row[1]"\t"row[8]"\t"GC;
 	printf(new_row"\n") >> "Gene_Length_GC.tsv";
