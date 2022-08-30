@@ -21,10 +21,6 @@ BEGIN {
 
 ## At each record with the value "exon" in field 3
 ($3 ~ /exon/){
-
-    ## Populate an array indexed by chromosome, then by gene id and
-    ## then by start position to capture GTF file rows corresponding
-    ## to each gene
     
     ## Iterate over fields to find gene_id
     gid=1;
@@ -47,16 +43,18 @@ BEGIN {
     }
     eid++;
 
+    ## Strip quotes from ensembl ID's
     gsub("\042","",$gid)
     gsub("\042","",$tid)
     gsub("\042","",$eid)
-    # Add exon, indexed by gene and record number
+    
+    ## Store exons in an array, indexed by gene ($gid) and record number (NR)
+    ## Each exon is represented by a tab delimited string
     exons_g[$gid][NR]=$1"\t"$4 - 1"\t"$5"\t"$gid"\t"".""\t"$7;
 
-    # Index start and end positions of exons      
+    ## Index start and end positions of exons      
     ex_start[$tid][$eid]=$4;
     ex_end[$tid][$eid]=$5;
-    
 }
 
 ($3 ~ /transcript/){
@@ -67,8 +65,8 @@ BEGIN {
     }
     tid++;
 
+    ## Store transcript record as a tab delimited string
     gsub("\042","",$tid)
-    ## Store transcript record
     tx[$tid]=$1"\t"$4 - 1"\t"$5"\t"$tid"\t"".""\t"$7;
 }
 
@@ -80,8 +78,8 @@ BEGIN {
     }
     gid++;
     
+    ## Store gene record as a tab delimited string
     gsub("\042","",$gid)
-    ## Store gene record
     gn[$gid]=$1"\t"$4"\t"$5"\t"$gid"\t"".""\t"$7;
 }
 
@@ -139,7 +137,6 @@ END {
     idx=0;
     print(line)
     while(flag == 1){
-	print("line in loop "line);
 	idx++;
 	gene_bed[idx] = line;
 	flag=(getline line < "flat_exons.bed");
@@ -203,7 +200,8 @@ END {
 	nuc_gene[idx] = line;
 	flag=(getline line < "nuc_gene.tsv");
     }
-
+    close("nuc_gene.tsv")
+    
     ## Calculate GC Percentage and write to file
     for(nuc_row in nuc_gene){
 	m=split(nuc_gene[nuc_row],row,"\t");
@@ -211,5 +209,7 @@ END {
 	new_row=row[1]"\t"row[8]"\t"GC;
 	printf(new_row"\n") >> "Gene_Length_GC.tsv";
     }
-    close("Gene_Length_GC.tsv");    
+    close("Gene_Length_GC.tsv");
+    system("rm nuc_gene.tsv")
+    system("rm nuc_exon.tsv")
 }
