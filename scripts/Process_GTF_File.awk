@@ -1,7 +1,7 @@
 #!/usr/bin/gawk -f
 ###################################################################
 #
-# File: Process_GTF_File.ak
+# File: Process_GTF_File.awk
 # Purpose: Collapse exons in GTF file from transcripts to genes
 #          and store resulting intervals in a BED file
 # Created: August 24, 2022
